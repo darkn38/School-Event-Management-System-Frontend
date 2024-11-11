@@ -1,0 +1,145 @@
+/* Register page background and centering */
+.register-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100%;
+    position: relative;
+    background: url('../images/temp111.jpg') center/cover no-repeat; /* Add background image */
+  }
+  
+  /* Register form container */
+  .register-container {
+    width: 100%;
+    max-width: 500px; /* Max width for the form */
+    padding: 40px; /* Padding inside the form */
+    box-sizing: border-box;
+    background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent background to stand out from image */
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  }
+  
+  /* Title styling */
+  .register-title {
+    font-size: 28px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center; /* Center the title */
+  }
+  
+  /* Register form styling */
+  .register-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Add space between the form fields */
+  }
+  
+  /* Form group styling */
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .form-group label {
+    font-size: 14px;
+    color: #555;
+  }
+  
+  .form-group input {
+    padding: 12px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    outline: none;
+    transition: border-color 0.3s;
+  }
+  
+  /* Change border color when focused */
+  .form-group input:focus {
+    border-color: #4CAF50;
+  }
+  
+  /* Register button styling */
+  .register-submit-button {
+    padding: 12px;
+    background-color: #4CAF50;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  /* Hover effect for button */
+  .register-submit-button:hover {
+    background-color: #45a049;
+  }
+  
+  /* Back Button Styling */
+  .back-button {
+    margin-top: 10px;
+  }
+  
+  /* Error message styling */
+  .error-message {
+    color: red;
+    font-size: 14px;
+    text-align: center;
+  }
+  
+  /* Dialog Styles */
+  .MuiDialog-paper {
+    width: 400px; /* Ensure both dialogs are the same size */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  }
+  
+  .dialog-success {
+    background-color: #e8f5e9; /* Light green background for success */
+  }
+  
+  .dialog-error {
+    background-color: #ffebee; /* Light red background for error */
+  }
+  
+  /* Title and Icon inside the Dialog */
+  .dialog-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 18px;
+    color: #333;
+  }
+  
+  .dialog-icon {
+    font-size: 32px;
+  }
+  
+  .dialog-icon.success {
+    color: #4CAF50; /* Green color for success */
+  }
+  
+  .dialog-icon.error {
+    color: #f44336; /* Red color for error */
+  }
+  
+  /* Responsive design for smaller screens */
+  @media screen and (max-width: 768px) {
+    .register-container {
+      width: 90%;
+      padding: 20px;
+    }
+    .register-title {
+      font-size: 24px;
+    }
+    .register-submit-button {
+      font-size: 14px;
+      padding: 10px;
+    }
+  }
+  

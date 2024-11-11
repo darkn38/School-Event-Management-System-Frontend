@@ -1,0 +1,89 @@
+.admin-events-container {
+    padding: 20px;
+    margin-left: 250px;
+    background-image: url('../../images/temp111.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed; /* Optional: keeps the background fixed during scrolling */
+    min-height: 100vh;
+    padding: 20px;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  th {
+    background-color: #333;
+    color: white;
+  }
+  
+  td {
+    font-size: 14px;
+  }
+  
+  .edit-button, .delete-button {
+    padding: 5px 10px;
+    cursor: pointer;
+    border: none;
+  }
+  
+  .edit-button {
+    background-color: #ffa500;
+    color: white;
+  }
+  
+  .delete-button {
+    background-color: #f44336;
+    color: white;
+  }
+  
+  .edit-button:hover {
+    background-color: #ff9800;
+  }
+  
+  .delete-button:hover {
+    background-color: #e57373;
+  }
+  
+  button {
+    cursor: pointer;
+    padding: 5px 10px;
+    border: none;
+  }
+  
+  .icon-button {
+    padding: 5px;
+    cursor: pointer;
+    border: none;
+  }
+  
+  .icon-button:hover {
+    background-color: #f0f0f0;
+  }
+  
+  .icon-button svg {
+    font-size: 20px;
+  }
+  
+  .status-pending {
+    color: orange;
+  }
+  
+  .status-approved {
+    color: green;
+  }
+  
+  .table-cell {
+    font-size: 14px;
+    font-weight: normal;
+    padding: 10px;
+  }
+  

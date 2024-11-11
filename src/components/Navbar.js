@@ -1,25 +1,39 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import LogoutIcon from '@mui/icons-material/Logout';
 import './Navbar.css';
 import profileIcon from '../images/user.png';
 
 const Navbar = ({ logout }) => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    const [userRole, setUserRole] = useState(null); // Store the role state locally
+    const [userRole, setUserRole] = useState(null);
+    const dropdownRef = useRef(null);
     const navigate = useNavigate();
 
     useEffect(() => {
-        // Check localStorage for the role and set the state accordingly
         const role = localStorage.getItem('userRole');
         setUserRole(role);
-    }, []); // This effect runs only once on component mount
+
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setIsDropdownOpen(false); // Close dropdown if clicking outside of it
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
 
     const handleLogout = () => {
-        logout(); // Call logout function from props
-        localStorage.removeItem('userRole'); // Remove role from localStorage
-        localStorage.removeItem('isAdmin'); // Remove isAdmin flag from localStorage
-        localStorage.setItem('loggedIn', 'false'); // Set loggedIn to false in localStorage
-        navigate('/login'); // Redirect to login page after logout
+        logout();
+        localStorage.removeItem('userRole');
+        localStorage.removeItem('isAdmin');
+        localStorage.setItem('loggedIn', 'false');
+        setIsDropdownOpen(false); // Close dropdown on logout
+        navigate('/login');
     };
 
     const toggleDropdown = () => {
@@ -27,7 +41,8 @@ const Navbar = ({ logout }) => {
     };
 
     const handleMyAccount = () => {
-        navigate('/profile'); // Redirect to profile page
+        setIsDropdownOpen(false); // Close dropdown when navigating to the profile page
+        navigate('/profile');
     };
 
     return (
@@ -42,12 +57,11 @@ const Navbar = ({ logout }) => {
                     <Link to="/about">About Us</Link>
                     <Link to="/create">Create</Link>
                     <Link to="/contact">Contact Us</Link>
-                    {/* Conditionally render Admin link if userRole is 'Admin' */}
                     {userRole === 'Admin' && (
                         <Link to="/admin">Admin</Link>
                     )}
                 </div>
-                <div className="profile-section">
+                <div className="profile-section" ref={dropdownRef}>
                     <img
                         src={profileIcon}
                         alt="Profile"
@@ -57,10 +71,12 @@ const Navbar = ({ logout }) => {
                     {isDropdownOpen && (
                         <div className="dropdown-menu">
                             <button onClick={handleMyAccount} className="dropdown-item">
-                                <i className="icon-user"></i> My Account
+                                <AccountCircleIcon style={{ marginRight: '8px' }} />
+                                My Account
                             </button>
                             <button onClick={handleLogout} className="dropdown-item">
-                                <i className="icon-logout"></i> Logout
+                                <LogoutIcon style={{ marginRight: '8px' }} />
+                                Logout
                             </button>
                         </div>
                     )}

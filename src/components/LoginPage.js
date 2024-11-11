@@ -1,13 +1,18 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography } from '@mui/material';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import ErrorIcon from '@mui/icons-material/Error';
 import './LoginPage.css';
 
 const LoginPage = ({ setLoggedIn }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [errorMessage, setErrorMessage] = useState('');
-    const navigate = useNavigate(); // Initialize navigate
+    const [openDialog, setOpenDialog] = useState(false); // To control dialog visibility
+    const [dialogType, setDialogType] = useState('success'); // Dialog type - success or error
+    const [message, setMessage] = useState(''); // Message to display in the dialog
+    const navigate = useNavigate();
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -20,27 +25,35 @@ const LoginPage = ({ setLoggedIn }) => {
             if (response.status === 200) {
                 const { role, isAdmin } = response.data;
 
-                console.log('Login successful:', response.data);
-
                 // Store the role and isAdmin in localStorage
                 localStorage.setItem('loggedIn', 'true');
                 localStorage.setItem('userRole', role);
-                localStorage.setItem('isAdmin', isAdmin); // Store isAdmin directly as a boolean
+                localStorage.setItem('isAdmin', isAdmin);
 
-                // Update the application state with the role and isAdmin
-                setLoggedIn(role); // Set the role in the parent (App.js)
-                
+                // Update the application state with the role
+                setLoggedIn(role);
+
                 // Redirect based on the user role
                 if (role === 'Admin') {
-                    navigate('/admin'); // Redirect to Admin Dashboard
+                    navigate('/admin');
                 } else {
-                    navigate('/home'); // Redirect to Home page
+                    navigate('/home');
                 }
+
+                // Show success dialog
+                setMessage('Login successful!');
+                setDialogType('success');
+                setOpenDialog(true);
             }
         } catch (error) {
-            setErrorMessage('Invalid email or password');
-            console.error('Login error:', error);
+            setMessage('Invalid email or password');
+            setDialogType('error');
+            setOpenDialog(true);
         }
+    };
+
+    const handleCloseDialog = () => {
+        setOpenDialog(false); // Close the dialog
     };
 
     return (
@@ -70,14 +83,39 @@ const LoginPage = ({ setLoggedIn }) => {
                             />
                         </div>
                         <button type="submit" className="login-button">Login</button>
-                        {errorMessage && <div className="error-message">{errorMessage}</div>}
                     </form>
+                    {/* Register Button */}
+                    <div className="register-link">
+                        <button onClick={() => navigate('/register')} className="register-button">
+                            Register
+                        </button>
+                    </div>
                 </div>
 
                 <div className="login-right">
                     {/* You can add any extra content here, like a logo or a background */}
                 </div>
             </div>
+
+            {/* Dialog for success or error messages */}
+            <Dialog open={openDialog} onClose={handleCloseDialog}>
+                <DialogTitle>
+                    <div className="dialog-title">
+                        <span className={`dialog-icon ${dialogType}`}>
+                            {dialogType === 'success' ? <CheckCircleIcon /> : <ErrorIcon />}
+                        </span>
+                        {dialogType === 'success' ? 'Success!' : 'Error!'}
+                    </div>
+                </DialogTitle>
+                <DialogContent>
+                    <Typography>{message}</Typography>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseDialog} color="primary">
+                        Close
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </div>
     );
 };

@@ -1,98 +1,83 @@
-/* Container for the admin dashboard */
-.admin-dashboard-container {
-    display: flex;
-    height: 100vh;
-    padding-left: 270px; /* Space for the sidebar */
-    background-image: url('../../images/temp111.jpg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-}
-
-/* Main Content Area */
-.main-content {
-    flex-grow: 1;
+/* Admin Dashboard Content Area */
+.admin-dashboard-content {
+    margin-left: 250px; /* Adjust the margin to the width of your sidebar */
     padding: 20px;
-    background-color: rgba(255, 255, 255, 0.8);
-    border-radius: 8px;
-    overflow-y: auto;
+    box-sizing: border-box;
+    background-image: url('../../images/temp111.jpg');
+    background-size: cover; /* Make the background cover the entire content area */
+    background-position: center center; /* Center the image */
+    background-repeat: no-repeat; /* Prevent background image from repeating */
+    min-height: 100vh; /* Ensure the content area takes up at least the full viewport height */
 }
 
 /* Dashboard Title */
 .dashboard-title {
-    font-size: 1.8rem;
-    font-weight: bold;
-    color: #333;
+    font-size: 24px;
     margin-bottom: 20px;
-    text-align: center;
 }
 
-/* Analytics Cards Container */
+/* Analytics Container */
 .analytics-container {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr); /* Fit two cards per row */
-    gap: 20px; /* Balanced gap between cards */
-}
-
-/* Individual Analytics Card Styling */
-.analytics-card {
-    background-color: rgba(211, 211, 211, 0.9);
-    padding: 15px; /* Moderate padding for readability */
-    border-radius: 8px;
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
-    max-width: 300px; /* Limit max width to keep cards moderately sized */
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: space-between;
 }
 
-/* Card Title and Value Styling */
+/* Analytics Cards */
+.analytics-card {
+    width: 30%;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+}
+
 .card-title {
-    font-size: 1.2rem;
+    font-size: 18px;
     font-weight: bold;
-    color: #444;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
 }
 
 .card-value {
-    font-size: 1.8rem; /* Slightly larger for emphasis */
+    font-size: 22px;
     font-weight: bold;
-    color: #333;
 }
 
-/* Gauge for Total Applications */
+/* Gauge Section */
 .gauge {
-    width: 80px; /* Moderate gauge size */
+    width: 100%;
     height: 80px;
-    border-radius: 50%;
-    background: conic-gradient(#444 0% 30%, #f0f0f0 30% 100%);
+    background-color: #f2f2f2;
+    border-radius: 10px;
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
 }
 
 .gauge-value {
-    font-size: 1rem;
+    font-size: 24px;
     font-weight: bold;
-    color: #333;
 }
 
-/* Pie Chart for Application Status */
+/* Pie Chart Section */
 .pie-chart {
-    width: 80px; /* Moderate pie chart size */
-    height: 80px;
-    border-radius: 50%;
-    background: conic-gradient(#333 0% 33%, #666 33% 66%, #999 66% 100%);
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
 }
 
 .pie-legend {
-    list-style: none;
-    padding: 0;
-    font-size: 0.9rem; /* Slightly larger font for readability */
-    color: #333;
-    margin-top: 5px;
+    list-style-type: none;
+    padding-left: 0;
+    font-size: 14px;
+}
+
+/* Pie Chart Legend Items */
+.pie-legend li {
     display: flex;
-    gap: 5px;
-    justify-content: center;
+    align-items: center;
+    gap: 10px;
 }

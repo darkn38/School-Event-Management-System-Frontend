@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import User from './components/User';
 import Navbar from './components/Navbar';
 import HomePage from './components/HomePage';
 import EventsPage from './components/EventsPage';
@@ -8,6 +7,7 @@ import AboutPage from './components/AboutPage';
 import CreatePage from './components/CreatePage';
 import ContactPage from './components/ContactPage';
 import LoginPage from './components/LoginPage';
+import RegisterPage from './components/RegisterPage';
 import ProfilePage from './components/ProfilePage';
 import AdminDashboard from './components/admin/AdminDashboard';
 import AdminEvents from './components/admin/AdminEvents';
@@ -53,6 +53,7 @@ const App = () => {
                     path="/login" 
                     element={loggedIn ? <Navigate to={userRole === 'Admin' ? '/admin' : '/home'} /> : <LoginPage setLoggedIn={handleLogin} />} 
                 />
+                <Route path="/register" element={<RegisterPage />} />
 
                 {/* Protected Routes with Navbar */}
                 {loggedIn && (
@@ -60,10 +61,6 @@ const App = () => {
                         {/* Standard User Routes */}
                         {userRole !== 'Admin' && (
                             <>
-                                <Route 
-                                    path="/user" 
-                                    element={<><Navbar logout={handleLogout} userRole={userRole} /><User /></>} 
-                                />
                                 <Route 
                                     path="/home" 
                                     element={<><Navbar logout={handleLogout} userRole={userRole} /><HomePage userRole={userRole} /></>} 

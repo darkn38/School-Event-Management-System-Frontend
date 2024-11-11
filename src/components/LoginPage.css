@@ -98,11 +98,86 @@
     background-color: #45a049;
 }
 
+/* Register button */
+.register-button {
+    width: 100%;
+    padding: 12px;
+    background-color: #4CAF50;
+    color: #fff;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 10px; /* Add margin to space it out from the login button */
+}
+
+.register-button:hover {
+    background-color: #45a049;
+}
+
 /* Error message */
 .error-message {
     color: red;
     font-size: 14px;
     margin-top: 10px;
+}
+
+/* Dialog styling */
+.MuiDialog-root {
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Dialog content size (same as Register dialog box) */
+.MuiDialog-paper {
+    width: 400px; /* Set the width to match the Register dialog size */
+    padding: 20px;
+    border-radius: 10px;
+}
+
+/* Dialog title */
+.dialog-title {
+    display: flex;
+    align-items: center;
+    font-size: 18px;
+    color: #333;
+}
+
+.dialog-title .dialog-icon {
+    margin-right: 10px;
+    font-size: 24px;
+}
+
+.dialog-title.success {
+    color: #4CAF50;
+}
+
+.dialog-title.error {
+    color: #D32F2F;
+}
+
+/* Dialog message text */
+.MuiDialogContent-root {
+    font-size: 16px;
+    color: #555;
+}
+
+/* Dialog button */
+.MuiDialogActions-root button {
+    background-color: #4CAF50;
+    color: #fff;
+    font-weight: bold;
+    padding: 8px 20px;
+    border-radius: 5px;
+    margin-top: 20px;
+    transition: background-color 0.3s;
+}
+
+.MuiDialogActions-root button:hover {
+    background-color: #45a049;
 }
 
 /* Responsive design */

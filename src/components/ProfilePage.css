@@ -1,0 +1,45 @@
+/* Apply background to the whole page */
+body {
+    background-image: url('../images/temp111.jpg'); /* Adjust the path accordingly */
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed; /* This keeps the background fixed when scrolling */
+    height: 100vh; /* Ensures the body takes up the full height of the viewport */
+    margin: 0; /* Remove default body margin */
+}
+
+/* Profile container section with padding */
+.profile-container {
+    padding: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: rgba(255, 255, 255, 0.8); /* Add transparency for better readability */
+    border-radius: 8px;
+    min-height: 100vh;
+}
+
+/* Profile Header Style */
+.profile-header {
+    margin-bottom: 32px;
+    text-align: center;
+}
+
+/* Profile details and edit section layout */
+.profile-details-section {
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent background */
+    border-radius: 8px;
+    text-align: center;
+}
+
+.profile-edit-section {
+    padding-left: 20px;
+    padding-right: 20px; /* Add right padding */
+    padding-top: 20px; /* Add top padding */
+    background-color: white; /* White background for the edit section */
+    border-radius: 8px;
+}
+
+.profile-button {
+    margin-top: 20px;
+}

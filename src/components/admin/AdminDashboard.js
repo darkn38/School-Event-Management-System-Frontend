@@ -3,7 +3,7 @@ import './AdminDashboard.css';
 
 const AdminDashboard = () => {
     return (
-        <div className="admin-dashboard">
+        <div className="admin-dashboard-content">
             <h2 className="dashboard-title">Admin Dashboard Analytics</h2>
             <div className="analytics-container">
                 {/* Card for Total Applications */}

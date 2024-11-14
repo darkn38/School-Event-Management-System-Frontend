@@ -1,27 +1,55 @@
-.about-us-page {
-    background-image: url('../images/temp111.jpg'); /* Background image for About Us */
-    background-size: cover;
-    background-position: center;
-    min-height: 100vh;
-    padding: 60px 20px;
-    color: white;
+/* Main container styling */
+.Container {
+    max-width: 100%;
+}
+
+/* About Us Main Heading */
+h1 {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #333;
     text-align: center;
 }
 
-.about-us-content {
-    background-color: rgba(0, 0, 0, 0.6); /* Dark overlay for better text visibility */
-    padding: 40px;
-    border-radius: 10px;
-    max-width: 800px;
-    margin: 0 auto;
+/* Section Description Text */
+.about-description, .team-description, .mission-description {
+    font-size: 1.25rem;
+    color: #333;
+    font-weight: bold;
+    text-align: center;
+    margin: 20px 0;
 }
 
-.about-us-content h1 {
-    font-size: 2.5rem;
+/* Team and Mission Images - larger, full-width */
+.team-image, .mission-image {
+    background-image: url('../images/hero_homepage.jpg'); /* Replace with appropriate path */
+    background-size: cover;
+    background-position: center;
+    height: 400px; /* Increase height for larger display */
+    width: 100%;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15); /* Soft shadow for depth */
     margin-bottom: 20px;
 }
 
-.about-us-content p {
-    font-size: 1.2rem;
-    line-height: 1.6;
+/* Grid Item Styling for Team and Mission Sections */
+.grid-item-text {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Cards in the By the Numbers section */
+.card {
+    font-size: 1.25rem;
+    font-weight: bold;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.card-icon {
+    font-size: 3.5rem;
+    color: #1976d2;
+    margin-bottom: 10px;
 }

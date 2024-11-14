@@ -1,45 +1,90 @@
-/* Apply background to the whole page */
+/* Background setup for the whole page */
 body {
-    background-image: url('../images/temp111.jpg'); /* Adjust the path accordingly */
+    background-image: url('../images/temp111.jpg');
     background-size: cover;
     background-position: center;
-    background-attachment: fixed; /* This keeps the background fixed when scrolling */
-    height: 100vh; /* Ensures the body takes up the full height of the viewport */
-    margin: 0; /* Remove default body margin */
+    background-attachment: fixed;
+    height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
 }
 
-/* Profile container section with padding */
+/* Container styling */
 .profile-container {
     padding: 40px;
-    max-width: 1200px;
-    margin: 0 auto;
-    background-color: rgba(255, 255, 255, 0.8); /* Add transparency for better readability */
+    max-width: 1000px; /* Max width adjusted to better use space */
+    margin: 50px auto;
+    background-color: rgba(255, 255, 255, 0.9);
     border-radius: 8px;
-    min-height: 100vh;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Profile Header Style */
-.profile-header {
-    margin-bottom: 32px;
+/* Header styling */
+.profile-title {
+    margin-bottom: 24px;
+    font-weight: bold;
     text-align: center;
+    color: #333;
 }
 
-/* Profile details and edit section layout */
+/* Profile grid layout with space utilization */
+.profile-grid {
+    display: flex;
+    gap: 24px;
+}
+
+/* Current Details Section */
 .profile-details-section {
+    flex: 1;
     padding: 20px;
-    background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent background */
+    background-color: rgba(240, 240, 240, 0.8);
     border-radius: 8px;
-    text-align: center;
 }
 
+.section-title {
+    margin-bottom: 16px;
+    font-weight: bold;
+    color: #555;
+}
+
+.detail-item {
+    margin-bottom: 12px;
+    color: #333;
+}
+
+/* Edit Details Section */
 .profile-edit-section {
-    padding-left: 20px;
-    padding-right: 20px; /* Add right padding */
-    padding-top: 20px; /* Add top padding */
-    background-color: white; /* White background for the edit section */
+    flex: 1;
+    padding: 20px;
+    background-color: #fff;
     border-radius: 8px;
 }
 
-.profile-button {
+.text-field {
+    margin-bottom: 15px;
+}
+
+/* Button container and button styles */
+.button-container {
+    display: flex;
+    gap: 10px;
     margin-top: 20px;
+    justify-content: flex-end;
+}
+
+.cancel-button {
+    background-color: #9c27b0;
+    color: white;
+}
+
+.save-button, .edit-button {
+    background-color: #1976d2;
+    color: white;
+}
+
+.cancel-button:hover,
+.save-button:hover,
+.edit-button:hover {
+    opacity: 0.9;
+    transition: opacity 0.3s;
 }

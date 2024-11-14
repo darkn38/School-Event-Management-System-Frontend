@@ -7,7 +7,6 @@ const HomePage = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        // Get userRole from localStorage and set it in state
         const role = localStorage.getItem('userRole');
         console.log('Role from localStorage:', role);  // Add this for debugging
         setUserRole(role);
@@ -22,19 +21,45 @@ const HomePage = () => {
             {/* Hero Section */}
             <section className="hero-section">
                 <div className="hero-text">
-                    <h1>Welcome to Our Event Management Platform!</h1>
-                    <p>Your one-stop solution for managing and attending exciting events.</p>
-                    {/* Show the button only if the user is an admin */}
-                    {userRole && userRole === 'Admin' &&(
-                        <button onClick={goToAdmin}>Go to Admin Page</button> // Admin button
+                    <h1>MADE FOR THOSE WHO DO</h1>
+                    <p>Discover exciting events and manage your own.</p>
+                    {userRole === 'Admin' && (
+                        <button onClick={goToAdmin}>Go to Admin Page</button>
                     )}
                 </div>
             </section>
 
+            {/* Filter Bar Below Hero Section */}
+            <section className="filter-bar">
+                <div className="filter-option">
+                    <label>Looking for</label>
+                    <select>
+                        <option>Choose event type</option>
+                        {/* Additional options as needed */}
+                    </select>
+                </div>
+                <div className="filter-option">
+                    <label>Location</label>
+                    <select>
+                        <option>Choose location</option>
+                        {/* Additional options as needed */}
+                    </select>
+                </div>
+                <div className="filter-option">
+                    <label>When</label>
+                    <select>
+                        <option>Choose date and time</option>
+                        {/* Additional options as needed */}
+                    </select>
+                </div>
+                <button className="search-button">Search</button>
+            </section>
+
             {/* Popular Events Section */}
             <section className="popular-events">
-                <h2>Popular Events</h2>
+                <h2>Upcoming Events</h2>
                 <div className="event-cards">
+                    {/* Event cards can be dynamically generated here */}
                     <div className="event-card event1">
                         <p>Event 1</p>
                     </div>
@@ -43,22 +68,6 @@ const HomePage = () => {
                     </div>
                     <div className="event-card event3">
                         <p>Event 3</p>
-                    </div>
-                </div>
-            </section>
-
-            {/* Upcoming Events Section */}
-            <section className="upcoming-events">
-                <h2>Upcoming Events</h2>
-                <div className="event-cards">
-                    <div className="event-card event4">
-                        <p>Upcoming Event 1</p>
-                    </div>
-                    <div className="event-card event5">
-                        <p>Upcoming Event 2</p>
-                    </div>
-                    <div className="event-card event6">
-                        <p>Upcoming Event 3</p>
                     </div>
                 </div>
             </section>

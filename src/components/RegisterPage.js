@@ -27,7 +27,7 @@ function RegisterPage() {
     };
 
     try {
-      const response = await axios.post('http://localhost:8080/api/users', user);
+      const response = await axios.post('http://localhost:8080/api/users/register', user);
       console.log('Registration Response:', response);
 
       if (response.status === 201) {

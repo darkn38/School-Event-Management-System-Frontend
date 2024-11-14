@@ -23,7 +23,10 @@ const LoginPage = ({ setLoggedIn }) => {
             const response = await axios.post('http://localhost:8080/api/auth/login', user);
 
             if (response.status === 200) {
-                const { role, isAdmin } = response.data;
+                const { token, role, isAdmin } = response.data;
+
+                // Store the token in localStorage
+                localStorage.setItem('token', token);
 
                 // Store the role and isAdmin in localStorage
                 localStorage.setItem('loggedIn', 'true');

@@ -38,15 +38,20 @@ const User = () => {
   const [editMode, setEditMode] = useState(false);
   const [currentUserId, setCurrentUserId] = useState(null);
 
-  const apiUrl = 'http://localhost:8080/api/users'; // Ensure this is correct
+  const apiUrl = 'http://localhost:8080/api/users';
 
   // Fetch users
   const fetchUsers = async () => {
     try {
-      const response = await axios.get(apiUrl);
+      const token = localStorage.getItem('token'); // Retrieve the token from local storage
+      const response = await axios.get(apiUrl, {
+        headers: {
+          Authorization: `Bearer ${token}`, // Pass the token in the Authorization header
+        },
+      });
       setUsers(response.data);
     } catch (error) {
-      console.error("Error fetching users:", error);
+      console.error('Error fetching users:', error);
     }
   };
 
@@ -58,27 +63,36 @@ const User = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const token = localStorage.getItem('token');
       if (editMode) {
-        await axios.put(`${apiUrl}/${currentUserId}`, user);
+        await axios.put(`${apiUrl}/${currentUserId}`, user, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
       } else {
-        await axios.post(apiUrl, user);
+        await axios.post(apiUrl, user, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
       }
       setUser({ firstName: '', lastName: '', emailAddress: '', role: '', password: '' });
       setEditMode(false);
       fetchUsers();
     } catch (error) {
-      console.error("Error saving user:", error);
+      console.error('Error saving user:', error);
     }
   };
 
   // Edit user
   const handleEdit = (user) => {
-    setUser({ 
-      firstName: user.firstName, 
-      lastName: user.lastName, 
-      emailAddress: user.emailAddress, 
+    setUser({
+      firstName: user.firstName,
+      lastName: user.lastName,
+      emailAddress: user.emailAddress,
       role: user.role,
-      password: '' // Optionally keep password empty on edit
+      password: '', // Optionally keep password empty on edit
     });
     setEditMode(true);
     setCurrentUserId(user.userID);
@@ -87,10 +101,15 @@ const User = () => {
   // Delete user
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`${apiUrl}/${id}`);
+      const token = localStorage.getItem('token');
+      await axios.delete(`${apiUrl}/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       fetchUsers();
     } catch (error) {
-      console.error("Error deleting user:", error);
+      console.error('Error deleting user:', error);
     }
   };
 
@@ -152,13 +171,19 @@ const User = () => {
           <TableBody>
             {users.map((user) => (
               <StyledTableRow key={user.userID}>
-                <StyledTableCell component="th" scope="row">{user.firstName}</StyledTableCell>
+                <StyledTableCell component="th" scope="row">
+                  {user.firstName}
+                </StyledTableCell>
                 <StyledTableCell>{user.lastName}</StyledTableCell>
                 <StyledTableCell>{user.emailAddress}</StyledTableCell>
                 <StyledTableCell>{user.role}</StyledTableCell>
                 <StyledTableCell>
-                  <button onClick={() => handleEdit(user)} className="edit-button">Edit</button>
-                  <button onClick={() => handleDelete(user.userID)} className="delete-button">Delete</button>
+                  <button onClick={() => handleEdit(user)} className="edit-button">
+                    Edit
+                  </button>
+                  <button onClick={() => handleDelete(user.userID)} className="delete-button">
+                    Delete
+                  </button>
                 </StyledTableCell>
               </StyledTableRow>
             ))}

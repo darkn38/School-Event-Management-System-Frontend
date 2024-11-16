@@ -1,7 +1,8 @@
 import React from 'react';
+import './AdminReminders.css';
 
 const AdminReminders = () => {
-    return <div>Admin Reminders</div>;
+    return <div className="admin-reminders-page">Admin Reminders</div>;
 };
 
 export default AdminReminders;

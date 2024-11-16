@@ -1,3 +1,14 @@
+/* About Us page background */
+.about-page {
+    background-image: url('../images/temp111.jpg'); /* Replace with the actual path */
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    padding-top: 40px;
+    padding-bottom: 40px;
+    min-height: 100vh;
+}
+
 /* Main container styling */
 .Container {
     max-width: 100%;

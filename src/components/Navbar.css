@@ -1,7 +1,7 @@
 /* Navbar styles */
 .navbar {
-    background-color: #ffffff;
-    padding: 10px 20px;
+    background-image: url('../images/navbar.jpg');
+    padding: 7px 20px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     position: sticky;
     top: 0;
@@ -10,13 +10,16 @@
 
 .navbar-content {
     display: flex;
-    justify-content: space-between; /* Distribute items to the left and right */
+    justify-content: space-between; /* Keeps items on left and right */
     align-items: center;
 }
 
+/* Adjust Navigation Links */
 .nav-links {
     display: flex;
     gap: 20px;
+    margin-left: auto; /* Pushes the links to the right */
+    padding-right: 20px; /* Adds some padding to the right side */
 }
 
 .nav-links a {

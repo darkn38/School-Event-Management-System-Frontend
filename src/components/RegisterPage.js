@@ -10,10 +10,10 @@ function RegisterPage() {
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState('Student'); // Default to student
-  const [message, setMessage] = useState(''); // Unified state for messages
-  const [openDialog, setOpenDialog] = useState(false); // State for dialog visibility
-  const [dialogType, setDialogType] = useState('success'); // 'success' or 'error'
+  const [role, setRole] = useState('Student');
+  const [message, setMessage] = useState('');
+  const [openDialog, setOpenDialog] = useState(false);
+  const [dialogType, setDialogType] = useState('success');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,8 +28,6 @@ function RegisterPage() {
 
     try {
       const response = await axios.post('http://localhost:8080/api/users/register', user);
-      console.log('Registration Response:', response);
-
       if (response.status === 201) {
         setMessage('Registration successful!');
         setDialogType('success');
@@ -38,20 +36,19 @@ function RegisterPage() {
         setDialogType('error');
       }
     } catch (error) {
-      console.error('Registration Error:', error);
-      setMessage('Email already exist please change your email.');
+      setMessage('Email already exists. Please change your email.');
       setDialogType('error');
     } finally {
-      setOpenDialog(true); // Show the dialog with the message
+      setOpenDialog(true);
     }
   };
 
   const handleCloseDialog = () => {
-    setOpenDialog(false); // Close the dialog
+    setOpenDialog(false);
   };
 
   const handleBack = () => {
-    window.history.back(); // Go back to the previous page (LoginPage)
+    window.history.back();
   };
 
   return (
@@ -99,8 +96,6 @@ function RegisterPage() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-
-          {/* Role Dropdown */}
           <FormControl fullWidth required margin="normal">
             <InputLabel>Role</InputLabel>
             <Select
@@ -112,31 +107,16 @@ function RegisterPage() {
               <MenuItem value="Admin">Admin</MenuItem>
             </Select>
           </FormControl>
-
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            fullWidth
-            className="register-submit-button"
-          >
+          <Button type="submit" variant="contained" fullWidth className="register-submit-button">
             Register
           </Button>
-          {/* Back Button */}
-          <Button
-            variant="contained"
-            fullWidth
-            onClick={handleBack} // Trigger back functionality
-            className="back-button"
-          >
+          <Button variant="contained" fullWidth onClick={handleBack} className="back-button">
             Back to Login
           </Button>
         </form>
       </Box>
-
-      {/* Dialog for success or error messages */}
       <Dialog fullWidth open={openDialog} onClose={handleCloseDialog}>
-      <DialogTitle>
+        <DialogTitle>
           <div className="dialog-title">
             <span className={`dialog-icon ${dialogType}`}>
               {dialogType === 'success' ? <CheckCircleIcon /> : <ErrorIcon />}

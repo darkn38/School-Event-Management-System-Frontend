@@ -1,15 +1,19 @@
 /* General sidebar styling */
 .sidebar {
-    width: 240px; /* Set the width of the sidebar */
-    background-color: #f4f6f9; /* Light background color */
-    height: 100vh; /* Full height */
-    display: flex;
-    flex-direction: column;
-    padding: 20px 0; /* Padding for spacing */
-    position: fixed; /* Sidebar stays fixed to the left */
-    top: 0; /* Align at the top */
-    left: 0; /* Align to the left */
-  }
+  width: 240px; /* Set the width of the sidebar */
+  background-image: url('../../images/sample11.png');
+  background-size: cover; /* Scale the image to cover the entire width */
+  background-repeat: repeat-y; /* Repeat the image vertically */
+  background-position: center; /* Center the background image */
+  height: 100vh; /* Full height */
+  display: flex;
+  flex-direction: column;
+  padding: 20px 0; /* Padding for spacing */
+  position: fixed; /* Sidebar stays fixed to the left */
+  top: 0; /* Align at the top */
+  left: 0; /* Align to the left */
+  border-right: 10px solid black;
+}
   
   .sidebar-title {
     font-size: 24px;
@@ -32,17 +36,18 @@
     padding: 12px 20px;
     margin-bottom: 10px;
     border-radius: 8px;
+    background-color: #fcd404;
     transition: background-color 0.3s ease;
     cursor: pointer;
   }
   
   .sidebar-item:hover {
-    background-color: #4caf50; /* Hover effect */
+    background-color: #fcd404;
     color: white;
   }
   
   .sidebar-item .MuiListItemIcon-root {
-    color: #4caf50; /* Green color for icons */
+    color: black; 
     margin-right: 15px;
   }
   

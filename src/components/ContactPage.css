@@ -1,52 +1,173 @@
+/* Main container for Contact Us Page */
 .contact-us-page {
-    background-image: url('../images/temp111.jpg'); /* Background image for Contact Us */
+    background-image: url('../images/temp111.jpg');
     background-size: cover;
     background-position: center;
+    padding: 40px 20px;
     min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Hero Section Styling */
+.contact-hero-section {
+    position: relative;
+    padding: 50px 0;
+    background-image: url('../images/contactus.jpeg'); /* Ensure this path is correct */
+    background-size: cover;
+    background-position: center;
+    height: 400px;
+    margin: 0 5%;
+    border-radius: 12px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 20px;
-}
-
-.contact-us-content {
-    background-color: rgba(255, 255, 255, 0.8); /* Light background for form */
-    padding: 40px;
-    border-radius: 10px;
-    max-width: 500px;
-    width: 100%;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.contact-us-content h1 {
-    font-size: 2.5rem;
     text-align: center;
-    margin-bottom: 30px;
+    width: 90%;
 }
 
-.contact-us-content form {
+.contact-hero-text {
+    color: white;
+    text-shadow: 0px 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+.contact-hero-text h1 {
+    font-size: 2.5rem;
+    margin: 0;
+}
+
+.contact-hero-text p {
+    font-size: 1.2rem;
+    margin-top: 10px;
+}
+
+/* Contact Section Styling */
+.contact-hero {
+    display: flex;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    width: 90%;
+    max-width: 1200px;
+    gap: 20px;
+    padding: 20px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+/* Contact Information Section */
+.contact-info {
+    flex: 1;
+    padding: 20px;
+    background-color: #f7f7f7;
+    border-radius: 10px;
+}
+
+.contact-info h2 {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.contact-info p {
+    font-size: 1rem;
+    color: #666;
+    line-height: 1.6;
+}
+
+.contact-details p {
+    margin: 10px 0;
+    font-size: 1rem;
+    color: #4CAF50;
+}
+
+/* Contact Form Section */
+.contact-form {
+    flex: 1;
+    padding: 20px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    align-items: center;
 }
 
-.contact-us-content input, .contact-us-content textarea {
+.contact-form h1 {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.contact-form form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.form-row {
+    display: flex;
+    gap: 10px;
+}
+
+/* Input Styles */
+.contact-form input[type="text"],
+.contact-form input[type="email"],
+.contact-form input[type="tel"],
+.contact-form textarea {
+    width: 100%;
     padding: 12px;
     font-size: 1rem;
     border-radius: 5px;
     border: 1px solid #ddd;
+    outline: none;
+    transition: border-color 0.3s;
 }
 
-.contact-us-content button {
-    background-color: #4CAF50;
+.contact-form input[type="text"]:focus,
+.contact-form input[type="email"]:focus,
+.contact-form input[type="tel"]:focus,
+.contact-form textarea:focus {
+    border-color: #4CAF50;
+}
+
+.contact-form textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.contact-form button[type="submit"] {
+    background: linear-gradient(90deg, #c834eb, #a12fcf);
     color: white;
+    font-weight: bold;
     padding: 12px;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     border-radius: 5px;
     border: none;
     cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
-.contact-us-content button:hover {
-    background-color: #45a049;
+.contact-form button[type="submit"]:hover {
+    background: linear-gradient(90deg, #a12fcf, #c834eb);
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+    .contact-hero {
+        flex-direction: column;
+    }
+
+    .contact-info, .contact-form {
+        width: 100%;
+        padding: 20px;
+    }
+
+    .form-row {
+        flex-direction: column;
+    }
 }

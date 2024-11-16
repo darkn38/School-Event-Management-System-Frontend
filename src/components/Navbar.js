@@ -49,7 +49,9 @@ const Navbar = ({ logout }) => {
         <nav className="navbar">
             <div className="navbar-content">
                 <div className="logo">
-                    <img src={require('../images/logo.png')} alt="Logo" className="logo-img" />
+                    <Link to="/home">
+                        <img src={require('../images/logo.png')} alt="Logo" className="logo-img" />
+                    </Link>
                 </div>
                 <div className="nav-links">
                     <Link to="/home">Home</Link>

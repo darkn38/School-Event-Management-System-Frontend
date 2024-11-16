@@ -1,0 +1,12 @@
+/* Main container styling for Admin Reminders page */
+.admin-reminders-page {
+    background-image: url('../../images/temp111.jpg');
+    background-size: cover;
+    background-position: center;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white; /* Adjust text color for readability */
+    padding: 20px;
+}

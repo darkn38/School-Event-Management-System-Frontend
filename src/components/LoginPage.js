@@ -17,7 +17,7 @@ const LoginPage = ({ setLoggedIn }) => {
     const handleLogin = async (e) => {
         e.preventDefault();
 
-        const user = { emailAddress: email, password: password };
+        const user = { emailAddress: email, password: password }; // Make sure field names match backend expectation
 
         try {
             const response = await axios.post('http://localhost:8080/api/auth/login', user);
@@ -64,6 +64,7 @@ const LoginPage = ({ setLoggedIn }) => {
             <div className="login-container">
                 <div className="login-left">
                     <h2>Login</h2>
+                    {message && dialogType === 'error' && <p style={{ color: 'red' }}>{message}</p>}
                     <form onSubmit={handleLogin} className="login-form">
                         <div className="form-group">
                             <label>Email</label>

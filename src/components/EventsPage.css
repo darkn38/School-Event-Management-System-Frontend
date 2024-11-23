@@ -22,21 +22,17 @@
 
 /* Events Content */
 .events-content {
-    display: flex;
-    justify-content: space-between;
-    gap: 30px;
-    flex-wrap: wrap;
     margin-top: 40px;
 }
 
-/* Left Column - Events List */
+/* Events List */
 .events-list {
-    flex: 1 1 45%; /* Takes up 45% of the width */
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Create a grid layout for events */
     gap: 30px;
 }
 
+/* Event Card */
 .event-card {
     background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent background for readability */
     border-radius: 10px;
@@ -54,21 +50,53 @@
 .event-card h2 {
     font-size: 2rem;
     margin-bottom: 10px;
+    color: white;
 }
 
 .event-card p {
     font-size: 1.1rem;
     line-height: 1.6;
     margin-bottom: 10px;
+    color: white;
 }
 
-/* Right Column - Registration & Payment */
+/* Buttons in Event Card */
+.event-card .btn {
+    text-decoration: none;
+    display: inline-block;
+    margin: 5px 0;
+    padding: 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.event-card .btn-info {
+    background-color: #17a2b8;
+    color: white;
+}
+
+.event-card .btn-warning {
+    background-color: #ffc107;
+    color: white;
+}
+
+.event-card .btn-danger {
+    background-color: #dc3545;
+    color: white;
+}
+
+.event-card .btn:hover {
+    opacity: 0.9;
+}
+
+/* Payment Section */
 .payment-section {
-    flex: 1 1 45%; /* Takes up 45% of the width */
+    flex: 1 1 100%; /* Takes up full width */
     background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
     border-radius: 10px;
     padding: 30px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
 }
 
 .payment-section h2 {

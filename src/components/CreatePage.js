@@ -1,46 +1,147 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { useNavigate, useParams } from 'react-router-dom';
 import './CreatePage.css'; // Link to CSS file
 
 const CreateEventPage = () => {
-    const [eventName, setEventName] = useState('');
-    const [eventDate, setEventDate] = useState('');
-    const [eventLocation, setEventLocation] = useState('');
-    const [eventDescription, setEventDescription] = useState('');
+    const { eventId } = useParams();
+    const navigate = useNavigate();
+    const [event, setEvent] = useState({
+        event_id: 0,
+        date: '',
+        description: '',
+        event_name: '',
+        event_type: '',
+        location: '',
+        time: '',
+    });
+    const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
-    const handleSubmit = (e) => {
+    useEffect(() => {
+        if (eventId) {
+            fetchEvent(eventId);
+        }
+    }, [eventId]);
+
+    const fetchEvent = async (eventId) => {
+        try {
+            const token = localStorage.getItem('token'); // Get token from localStorage
+            const response = await axios.get(`http://localhost:8080/events/${eventId}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            setEvent(response.data);
+        } catch (error) {
+            console.error('Error fetching event:', error);
+        }
+    };
+
+    const handleChange = (e) => {
+        setEvent({ ...event, [e.target.name]: e.target.value });
+    };
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Handle form submission logic here
-        alert('Event Created!');
+        try {
+            const token = localStorage.getItem('token'); // Get token from localStorage
+            if (eventId) {
+                // Update existing event
+                await axios.put(`http://localhost:8080/events/${eventId}`, {
+                    date: event.date,
+                    description: event.description,
+                    event_name: event.event_name,
+                    event_type: event.event_type,
+                    location: event.location,
+                    time: event.time,
+                }, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+            } else {
+                // Create new event
+                await axios.post('http://localhost:8080/events', {
+                    date: event.date,
+                    description: event.description,
+                    event_name: event.event_name,
+                    event_type: event.event_type,
+                    location: event.location,
+                    time: event.time,
+                }, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+            }
+            setShowSuccessMessage(true);
+            setTimeout(() => {
+                setShowSuccessMessage(false);
+                navigate('/');
+            }, 1500);
+        } catch (error) {
+            console.error('Error creating/updating event:', error);
+        }
     };
 
     return (
         <div className="create-event-page">
             <section className="create-event-content">
-                <h1>Create New Event</h1>
+                <h1>{eventId ? 'Edit Event' : 'Create New Event'}</h1>
+                {showSuccessMessage && (
+                    <div className="alert alert-success" role="alert">
+                        Event {eventId ? 'updated' : 'created'} successfully!
+                    </div>
+                )}
                 <form onSubmit={handleSubmit}>
                     <input
                         type="text"
+                        name="event_name"
                         placeholder="Event Name"
-                        value={eventName}
-                        onChange={(e) => setEventName(e.target.value)}
-                    />
-                    <input
-                        type="date"
-                        value={eventDate}
-                        onChange={(e) => setEventDate(e.target.value)}
+                        value={event.event_name}
+                        onChange={handleChange}
+                        required
                     />
                     <input
                         type="text"
+                        name="event_type"
+                        placeholder="Event Type"
+                        value={event.event_type}
+                        onChange={handleChange}
+                        required
+                    />
+                    <input
+                        type="date"
+                        name="date"
+                        value={event.date}
+                        onChange={handleChange}
+                        required
+                    />
+                    <input
+                        type="time"
+                        name="time"
+                        value={event.time}
+                        onChange={handleChange}
+                        required
+                    />
+                    <input
+                        type="text"
+                        name="location"
                         placeholder="Event Location"
-                        value={eventLocation}
-                        onChange={(e) => setEventLocation(e.target.value)}
+                        value={event.location}
+                        onChange={handleChange}
+                        required
                     />
                     <textarea
+                        name="description"
                         placeholder="Event Description"
-                        value={eventDescription}
-                        onChange={(e) => setEventDescription(e.target.value)}
+                        value={event.description}
+                        onChange={handleChange}
+                        required
                     ></textarea>
-                    <button type="submit">Create Event</button>
+                    <button type="submit" className="create-event-button">
+                        {eventId ? 'Update Event' : 'Create Event'}
+                    </button>
                 </form>
             </section>
         </div>

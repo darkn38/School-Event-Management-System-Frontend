@@ -8,6 +8,12 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Button from '@mui/material/Button';
 import './AdminUsers.css';
 
 // Styled components for the table
@@ -37,6 +43,9 @@ const User = () => {
   const [user, setUser] = useState({ firstName: '', lastName: '', emailAddress: '', role: '', password: '' });
   const [editMode, setEditMode] = useState(false);
   const [currentUserId, setCurrentUserId] = useState(null);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [userToDelete, setUserToDelete] = useState(null);
+
 
   const apiUrl = 'http://localhost:8080/api/users';
 
@@ -98,20 +107,34 @@ const User = () => {
     setCurrentUserId(user.userID);
   };
 
-  // Delete user
-  const handleDelete = async (id) => {
-    try {
-      const token = localStorage.getItem('token');
-      await axios.delete(`${apiUrl}/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      fetchUsers();
-    } catch (error) {
-      console.error('Error deleting user:', error);
-    }
-  };
+  // Open delete confirmation dialog
+const confirmDeleteUser = (id) => {
+  setUserToDelete(id);
+  setOpenDialog(true);
+};
+
+// Delete user after confirmation
+const handleDelete = async () => {
+  try {
+    const token = localStorage.getItem('token');
+    await axios.delete(`${apiUrl}/${userToDelete}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    fetchUsers();
+    setOpenDialog(false);
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    setOpenDialog(false);
+  }
+};
+
+// Close delete dialog
+const handleCloseDialog = () => {
+  setOpenDialog(false);
+};
+
 
   return (
     <div className="user-container" style={{ marginLeft: '250px' }}>
@@ -181,7 +204,7 @@ const User = () => {
                   <button onClick={() => handleEdit(user)} className="edit-button">
                     Edit
                   </button>
-                  <button onClick={() => handleDelete(user.userID)} className="delete-button">
+                  <button onClick={() => confirmDeleteUser(user.userID)} className="delete-button">
                     Delete
                   </button>
                 </StyledTableCell>
@@ -190,6 +213,24 @@ const User = () => {
           </TableBody>
         </Table>
       </TableContainer>
+      <Dialog
+  open={openDialog}
+  onClose={handleCloseDialog}
+  aria-labelledby="alert-dialog-title"
+  aria-describedby="alert-dialog-description"
+>
+  <DialogTitle id="alert-dialog-title">{"Confirm User Deletion"}</DialogTitle>
+  <DialogContent>
+    <DialogContentText id="alert-dialog-description">
+      Are you sure you want to delete this user? This action cannot be undone.
+    </DialogContentText>
+  </DialogContent>
+  <DialogActions className="dialog-actions">
+    <Button onClick={handleCloseDialog} className="cancel-button">Cancel</Button>
+    <Button onClick={handleDelete} className="delete-button" autoFocus>Delete</Button>
+  </DialogActions>
+</Dialog>
+
     </div>
   );
 };

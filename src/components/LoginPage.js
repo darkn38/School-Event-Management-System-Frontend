@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import {jwtDecode} from "jwt-decode"; // Corrected the import
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ErrorIcon from '@mui/icons-material/Error';
@@ -25,8 +26,20 @@ const LoginPage = ({ setLoggedIn }) => {
             if (response.status === 200) {
                 const { token, role, isAdmin } = response.data;
 
-                // Store the token in localStorage
+                // Decode the token to get user information
+                const decodedToken = jwtDecode(token);
+                console.log("Decoded Token:", decodedToken); // Log the decoded token to see its structure
+
+                // Use 'sub' as the email field based on the token structure
+                const userEmail = decodedToken.sub;
+
+                // Store the token and email in localStorage
                 localStorage.setItem('token', token);
+                if (userEmail) {
+                    localStorage.setItem('userEmail', userEmail);
+                } else {
+                    console.error("Email not found in the decoded token.");
+                }
 
                 // Store the role and isAdmin in localStorage
                 localStorage.setItem('loggedIn', 'true');

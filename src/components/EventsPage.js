@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Container, Grid, Card, CardContent, Typography, Button, TextField, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Snackbar, Alert } from '@mui/material';
+import { Container, Grid, Card, CardContent, Typography, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Snackbar, Alert, Select, MenuItem } from '@mui/material';
 import './EventsPage.css';
 
 const EventsPage = () => {
     const [events, setEvents] = useState([]);
     const [selectedEvent, setSelectedEvent] = useState(null);
-    const [userInfo, setUserInfo] = useState({ name: '', email: '' });
+    const [ticketType, setTicketType] = useState("Standard");
+    const [paymentStatus, setPaymentStatus] = useState("Paid");
     const [openDialog, setOpenDialog] = useState(false);
-    const [paymentSuccess, setPaymentSuccess] = useState(false);
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [snackbarSeverity, setSnackbarSeverity] = useState('success');
@@ -29,6 +29,7 @@ const EventsPage = () => {
                         Authorization: `Bearer ${token}`,
                     },
                 });
+                
                 setEvents(response.data);
             } catch (error) {
                 console.error('Error fetching events:', error);
@@ -45,48 +46,49 @@ const EventsPage = () => {
     };
 
     // Handle user registration
-    const handleRegistration = async () => {
-        const token = localStorage.getItem('token'); // Retrieve token from localStorage
-        
-        if (!token) {
-            console.error("No token found");
-            setSnackbarMessage('Authentication failed. Please log in again.');
-            setSnackbarSeverity('error');
-            setSnackbarOpen(true);
-            return;
-        }
-    
-        try {
-            const response = await axios.post(
-                'http://localhost:8080/eventregistrations',
-                {
-                    eventId: selectedEvent.event_id,
-                    name: userInfo.name,
-                    email: userInfo.email,
+const handleRegistration = async () => {
+    const token = localStorage.getItem('token'); // Retrieve token from localStorage
+    const userEmail = localStorage.getItem('userEmail'); // Retrieve user email from localStorage
+
+    if (!token || !userEmail) {
+        console.error("No token or user email found");
+        setSnackbarMessage('Authentication failed. Please log in again.');
+        setSnackbarSeverity('error');
+        setSnackbarOpen(true);
+        return;
+    }
+
+    try {
+        const response = await axios.post(
+            'http://localhost:8080/api/eventregistrations',
+            {
+                eventId: selectedEvent.event_id,
+                ticketType: ticketType,
+                paymentStatus: paymentStatus,
+                emailAddress: userEmail, // Include email in the request body
+            },
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`, // Include token in the request headers
                 },
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${token}`, // Include token in the request headers
-                    },
-                }
-            );
-    
-            if (response.status === 200) {
-                setSnackbarMessage(`Registration for ${selectedEvent.event_name} was successful!`);
-                setSnackbarSeverity('success');
-                setSnackbarOpen(true);
-                setPaymentSuccess(true);
             }
-        } catch (error) {
-            console.error('Error during registration:', error);
-            setSnackbarMessage('Registration failed. Please try again.');
-            setSnackbarSeverity('error');
+        );
+
+        if (response.status === 200) {
+            setSnackbarMessage(`Registration for ${selectedEvent.event_name} was successful!`);
+            setSnackbarSeverity('success');
             setSnackbarOpen(true);
         }
-        setOpenDialog(false);
-    };
-    
+    } catch (error) {
+        console.error('Error during registration:', error);
+        setSnackbarMessage('Registration failed. Please try again.');
+        setSnackbarSeverity('error');
+        setSnackbarOpen(true);
+    }
+    setOpenDialog(false);
+};
+
 
     // Handle closing snackbar
     const handleSnackbarClose = () => {
@@ -127,25 +129,28 @@ const EventsPage = () => {
                 <DialogTitle>Register for {selectedEvent?.event_name}</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Please fill in your details to register for this event.
+                        Please select your ticket type and payment status to register for this event.
                     </DialogContentText>
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        label="Your Name"
-                        type="text"
+                    <Select
                         fullWidth
-                        value={userInfo.name}
-                        onChange={(e) => setUserInfo({ ...userInfo, name: e.target.value })}
-                    />
-                    <TextField
-                        margin="dense"
-                        label="Your Email"
-                        type="email"
+                        value={ticketType}
+                        onChange={(e) => setTicketType(e.target.value)}
+                        label="Ticket Type"
+                        sx={{ marginTop: '16px' }}
+                    >
+                        <MenuItem value="Standard">Standard</MenuItem>
+                        <MenuItem value="VIP">VIP</MenuItem>
+                    </Select>
+                    <Select
                         fullWidth
-                        value={userInfo.email}
-                        onChange={(e) => setUserInfo({ ...userInfo, email: e.target.value })}
-                    />
+                        value={paymentStatus}
+                        onChange={(e) => setPaymentStatus(e.target.value)}
+                        label="Payment Status"
+                        sx={{ marginTop: '16px' }}
+                    >
+                        <MenuItem value="Paid">Paid</MenuItem>
+                        <MenuItem value="Unpaid">Unpaid</MenuItem>
+                    </Select>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
@@ -161,12 +166,6 @@ const EventsPage = () => {
                     {snackbarMessage}
                 </Alert>
             </Snackbar>
-
-            {paymentSuccess && (
-                <Typography variant="h5" align="center" sx={{ marginTop: '40px' }}>
-                    Your registration for {selectedEvent.event_name} is complete! We look forward to seeing you at the event.
-                </Typography>
-            )}
         </Container>
     );
 };

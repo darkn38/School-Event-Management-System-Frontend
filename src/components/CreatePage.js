@@ -2,6 +2,12 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import './CreatePage.css'; // Link to CSS file
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Button from '@mui/material/Button';
 
 const CreateEventPage = () => {
     const { eventId } = useParams();
@@ -16,6 +22,7 @@ const CreateEventPage = () => {
         time: '',
     });
     const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+    const [dialogOpen, setDialogOpen] = useState(false);
 
     useEffect(() => {
         if (eventId) {
@@ -77,11 +84,16 @@ const CreateEventPage = () => {
             setShowSuccessMessage(true);
             setTimeout(() => {
                 setShowSuccessMessage(false);
-                navigate('/');
-            }, 1500);
+                setDialogOpen(true);
+            }, 500);
         } catch (error) {
             console.error('Error creating/updating event:', error);
         }
+    };
+
+    const handleDialogClose = () => {
+        setDialogOpen(false);
+        navigate('/');
     };
 
     return (
@@ -143,6 +155,26 @@ const CreateEventPage = () => {
                         {eventId ? 'Update Event' : 'Create Event'}
                     </button>
                 </form>
+                <Dialog
+                    open={dialogOpen}
+                    onClose={handleDialogClose}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                >
+                    <DialogTitle id="alert-dialog-title">
+                        {"Event Created Successfully"}
+                    </DialogTitle>
+                    <DialogContent>
+                        <DialogContentText id="alert-dialog-description">
+                            The event has been created successfully. You will be redirected shortly.
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleDialogClose} color="primary" autoFocus>
+                            OK
+                        </Button>
+                    </DialogActions>
+                </Dialog>
             </section>
         </div>
     );

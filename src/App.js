@@ -18,6 +18,7 @@ import Sidebar from './components/admin/Sidebar';
 const App = () => {
     const [loggedIn, setLoggedIn] = useState(false);
     const [userRole, setUserRole] = useState(null);
+    const [notifications, setNotifications] = useState([]); // Shared notification state
 
     useEffect(() => {
         // Check if the user is logged in by reading from localStorage
@@ -43,6 +44,11 @@ const App = () => {
         setUserRole(null);
         localStorage.removeItem('loggedIn');
         localStorage.removeItem('userRole');
+    };
+
+    // Add a notification to the state
+    const addNotification = (notification) => {
+        setNotifications((prevNotifications) => [...prevNotifications, notification]);
     };
 
     return (
@@ -124,10 +130,10 @@ const App = () => {
             path="/admin/reminders" 
             element={
                 <>
-                    <Navbar logout={handleLogout} userRole={userRole} />
-                    <div className="admin-container">
+                        <Navbar logout={handleLogout} userRole={userRole} notifications={notifications} />
+                        <div className="admin-container">
                         <Sidebar />  {/* Sidebar on the left */}
-                        <AdminReminders />  {/* Main content */}
+                        <AdminReminders addNotification={addNotification} />
                     </div>
                 </>
             } 

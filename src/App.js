@@ -14,6 +14,7 @@ import AdminEvents from './components/admin/AdminEvents';
 import AdminReminders from './components/admin/AdminReminders';
 import AdminUsers from './components/admin/AdminUsers';
 import Sidebar from './components/admin/Sidebar';
+import SearchResultsPage from './components/SearchResultsPage';
 
 const App = () => {
     const [loggedIn, setLoggedIn] = useState(false);
@@ -90,6 +91,10 @@ const App = () => {
                                 <Route 
                                     path="/profile" 
                                     element={<><Navbar logout={handleLogout} userRole={userRole} /><ProfilePage /></>} 
+                                />
+                                <Route 
+                                    path="/search-results" 
+                                    element={<><Navbar logout={handleLogout} userRole={userRole} /><SearchResultsPage /></>} 
                                 />
                             </>
                         )}
@@ -176,6 +181,7 @@ const App = () => {
                                     path="/profile" 
                                     element={<><Navbar logout={handleLogout} userRole={userRole} /><ProfilePage /></>} 
                                 />
+                                <Route path="/search-results" element={<><Navbar /><SearchResultsPage /></>} />
                             </>
                         )}
                     </>
@@ -186,6 +192,7 @@ const App = () => {
                     path="/" 
                     element={loggedIn ? <Navigate to={userRole === 'Admin' ? '/admin' : '/home'} /> : <Navigate to="/login" />} 
                 />
+                <Route path="*" element={<div>Route not found</div>} />
             </Routes>
         </Router>
     );

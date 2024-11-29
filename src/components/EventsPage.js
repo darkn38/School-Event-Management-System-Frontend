@@ -1,24 +1,65 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Container, Grid, Card, CardContent, Typography, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Snackbar, Alert, Select, MenuItem } from '@mui/material';
+import {
+    Container,
+    Grid,
+    Card,
+    CardContent,
+    Typography,
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    Snackbar,
+    Alert,
+    Select,
+    MenuItem,
+    CardMedia,
+    Box,
+    TextField
+} from '@mui/material';
 import './EventsPage.css';
+import academicImage from '../images/img1.jpg';
+import sportsImage from '../images/img2.jpg';
+import culturalImage from '../images/img3.jpg';
+import miscImage from '../images/img4.jpg';
+import defaultImage from '../images/2_event.jpg';
+
+// Mapping of event types to images
+const eventTypeImages = {
+    'Academic Events': academicImage,
+    'Sports Events': sportsImage,
+    'Cultural Events': culturalImage,
+    'Miscellaneous Events': miscImage,
+};
+
+// Free event types
+const freeEventTypes = ['Academic Events', 'Cultural Events', 'Sports Events']; // Sports Events are free now
 
 const EventsPage = () => {
     const [events, setEvents] = useState([]);
     const [selectedEvent, setSelectedEvent] = useState(null);
-    const [ticketType, setTicketType] = useState("Standard");
-    const [paymentStatus, setPaymentStatus] = useState("Paid");
+    const [ticketType, setTicketType] = useState('Standard');
+    const [paymentStatus] = useState('Paid');
     const [openDialog, setOpenDialog] = useState(false);
+    const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [snackbarSeverity, setSnackbarSeverity] = useState('success');
+    const [paymentMethod, setPaymentMethod] = useState('GCash'); // Payment method dropdown
+    const [paymentDetails, setPaymentDetails] = useState(''); // GCash/Card number input
+    const [paymentAmount, setPaymentAmount] = useState(''); // Input for amount
+    const [errorMessage, setErrorMessage] = useState(''); // Error messaging
+    const [successDialogOpen, setSuccessDialogOpen] = useState(false);
+    const [successMessage, setSuccessMessage] = useState('');
 
-    // Fetch events from the backend
+
     useEffect(() => {
         const fetchEvents = async () => {
             try {
                 const token = localStorage.getItem('token');
-
                 if (!token) {
                     console.error('No token found');
                     return;
@@ -29,8 +70,19 @@ const EventsPage = () => {
                         Authorization: `Bearer ${token}`,
                     },
                 });
-                
-                setEvents(response.data);
+
+                const currentDate = new Date();
+                const filteredEvents = response.data.filter((event) => {
+                    const eventDate = new Date(event.date);
+                    return eventDate >= currentDate; // Include only current and upcoming events
+                });
+
+                const eventsWithImages = filteredEvents.map((event) => ({
+                    ...event,
+                    imageUrl: eventTypeImages[event.event_type] || defaultImage,
+                }));
+
+                setEvents(eventsWithImages);
             } catch (error) {
                 console.error('Error fetching events:', error);
             }
@@ -39,58 +91,144 @@ const EventsPage = () => {
         fetchEvents();
     }, []);
 
-    // Handle selecting an event for registration
-    const handleEventSelect = (event) => {
+    // Handles opening the details dialog
+    const handleDetailsClick = (event) => {
         setSelectedEvent(event);
-        setOpenDialog(true);
+        setDetailsDialogOpen(true);
     };
+    const handlePaymentSubmission = () => {
+        // Validate payment amount
+        if (parseInt(paymentAmount) < 250) {
+            setErrorMessage('Amount must be at least PHP 250.');
+            return;
+        } else if (parseInt(paymentAmount) > 250) {
+            setErrorMessage('Amount exceeds the required PHP 250. Please enter the exact amount.');
+            return;
+        }
+    
+        // Ensure payment details are provided
+        if (!paymentDetails) {
+            setErrorMessage(`Please enter your ${paymentMethod} details.`);
+            return;
+        }
+    
+        // Clear errors and proceed with payment registration
+        setErrorMessage('');
+        handleMockPaymentRegistration(); // Existing function to handle payment API
+    };
+    
 
-    // Handle user registration
-const handleRegistration = async () => {
-    const token = localStorage.getItem('token'); // Retrieve token from localStorage
-    const userEmail = localStorage.getItem('userEmail'); // Retrieve user email from localStorage
-
-    if (!token || !userEmail) {
-        console.error("No token or user email found");
-        setSnackbarMessage('Authentication failed. Please log in again.');
-        setSnackbarSeverity('error');
-        setSnackbarOpen(true);
-        return;
-    }
-
+    // Handles registration for free and paid events
+    const handleRegisterClick = async (event) => {
+        const token = localStorage.getItem('token');
+        const userID = localStorage.getItem('userID');
+    
+        if (!token || !userID) {
+            console.error('No token or userID found');
+            setSnackbarMessage('Authentication failed. Please log in again.');
+            setSnackbarSeverity('error');
+            setSnackbarOpen(true);
+            return;
+        }
+        // Check if the event is free or paid first
+        if (freeEventTypes.includes(event.event_type)) {
+            try {
+                // Register directly for free events
+                const registerResponse = await axios.post(
+                    'http://localhost:8080/api/eventregistrations/register',
+                    { userID, eventID: event.event_id }, // Use JSON body
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                            'Content-Type': 'application/json',
+                        },
+                    }
+                );
+    
+                if (registerResponse.status === 200) {
+                    setSuccessMessage(`Successfully registered for ${event.event_name}!`);
+                    setSuccessDialogOpen(true); // Open success dialog
+                }
+            } catch (error) {
+                console.error('Error during registration for free event:', error);
+                setSnackbarMessage('You are already registered for this event.');
+                setSnackbarSeverity('error');
+                setSnackbarOpen(true);
+            }
+            return;
+        }else {
+            // Check registration status for all events
     try {
-        const response = await axios.post(
-            'http://localhost:8080/api/eventregistrations',
+        const checkResponse = await axios.post(
+            `http://localhost:8080/api/eventregistrations/check`,
             {
-                eventId: selectedEvent.event_id,
-                ticketType: ticketType,
-                paymentStatus: paymentStatus,
-                emailAddress: userEmail, // Include email in the request body
-            },
-            {
+                params: { userID, eventID: event.event_id },
                 headers: {
+                    Authorization: `Bearer ${token}`,
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`, // Include token in the request headers
                 },
             }
         );
 
-        if (response.status === 200) {
-            setSnackbarMessage(`Registration for ${selectedEvent.event_name} was successful!`);
-            setSnackbarSeverity('success');
+        // Handle already registered response
+        if (checkResponse.data === true) {
+            setSnackbarMessage('You are already registered for this event.');
+            setSnackbarSeverity('warning');
             setSnackbarOpen(true);
         }
     } catch (error) {
-        console.error('Error during registration:', error);
-        setSnackbarMessage('Registration failed. Please try again.');
-        setSnackbarSeverity('error');
-        setSnackbarOpen(true);
+        console.error('Error checking registration status:', error);
     }
-    setOpenDialog(false);
-};
+            setSelectedEvent(event);
+            setOpenDialog(true);
+        }
+    };
+    
+    
+    
+    // Handle mock payment registration for paid events
+    const handleMockPaymentRegistration = async () => {
+        const token = localStorage.getItem('token');
+        const userEmail = localStorage.getItem('userEmail');
+        if (!token || !userEmail) {
+            console.error('No token or user email found');
+            setSnackbarMessage('Authentication failed. Please log in again.');
+            setSnackbarSeverity('error');
+            setSnackbarOpen(true);
+            return;
+        }
 
+        try {
+            const response = await axios.post(
+                'http://localhost:8080/api/eventregistrations',
+                {
+                    eventId: selectedEvent.event_id,
+                    ticketType,
+                    paymentStatus,
+                    emailAddress: userEmail,
+                },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
 
-    // Handle closing snackbar
+            if (response.status === 200) {
+                setSnackbarMessage(`Successfully registered for ${selectedEvent.event_name}!`);
+                setSnackbarSeverity('success');
+                setSnackbarOpen(true);
+            }
+        } catch (error) {
+            console.error('Error during registration:', error);
+            setSnackbarMessage('Registration failed. Please try again.');
+            setSnackbarSeverity('error');
+            setSnackbarOpen(true);
+        }
+        setOpenDialog(false);
+    };
+
     const handleSnackbarClose = () => {
         setSnackbarOpen(false);
     };
@@ -104,68 +242,191 @@ const handleRegistration = async () => {
             <Grid container spacing={4}>
                 {events.map((event) => (
                     <Grid item xs={12} sm={6} md={4} key={event.event_id}>
-                        <Card onClick={() => handleEventSelect(event)} sx={{ cursor: 'pointer', transition: '0.3s', '&:hover': { transform: 'scale(1.05)' } }}>
+                        <Card
+                            sx={{
+                                transition: 'transform 0.3s, box-shadow 0.3s',
+                                '&:hover': {
+                                    transform: 'translateY(-10px)',
+                                    boxShadow: '0 8px 16px rgba(0, 0, 0, 0.2)',
+                                },
+                                borderRadius: '16px',
+                                overflow: 'hidden',
+                            }}
+                        >
+                            <CardMedia
+                                component="img"
+                                height="180"
+                                image={event.imageUrl || defaultImage}
+                                alt={event.event_name}
+                            />
                             <CardContent>
                                 <Typography variant="h5" component="div">
                                     {event.event_name}
                                 </Typography>
                                 <Typography color="textSecondary" gutterBottom>
-                                    Date: {event.date}
+                                    {event.date}
                                 </Typography>
                                 <Typography color="textSecondary">
                                     Location: {event.location}
                                 </Typography>
-                                <Typography variant="body2" color="textSecondary">
-                                    {event.description}
+                                <Typography 
+                                    variant="subtitle1" 
+                                    color={freeEventTypes.includes(event.event_type) ? "green" : "red"}
+                                    sx={{ marginTop: '8px' }}
+                                    >
+                                    {freeEventTypes.includes(event.event_type) ? "Free" : "Paid"}
                                 </Typography>
+                                <Box mt={2}>
+                                    <Button
+                                        variant="contained"
+                                        sx={{
+                                            backgroundColor: '#fcd404',
+                                            color: '#000',
+                                            '&:hover': {
+                                                backgroundColor: '#e6bf02',
+                                            },
+                                            margin: '8px',
+                                        }}
+                                        onClick={() => handleDetailsClick(event)}
+                                    >
+                                        Details
+                                    </Button>
+                                    <Button
+                                        variant="contained"
+                                        sx={{
+                                            backgroundColor: '#fcd404',
+                                            color: '#000',
+                                            '&:hover': {
+                                                backgroundColor: '#e6bf02',
+                                            },
+                                            margin: '8px',
+                                        }}
+                                        onClick={() => handleRegisterClick(event)}
+                                    >
+                                        Register
+                                    </Button>
+                                </Box>
                             </CardContent>
                         </Card>
                     </Grid>
                 ))}
             </Grid>
 
-            {/* Registration Dialog */}
-            <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
-                <DialogTitle>Register for {selectedEvent?.event_name}</DialogTitle>
+            <Dialog open={detailsDialogOpen} onClose={() => setDetailsDialogOpen(false)}>
+                <DialogTitle>Event Details</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Please select your ticket type and payment status to register for this event.
+                        <strong>Name:</strong> {selectedEvent?.event_name}
+                        <br />
+                        <strong>Date:</strong> {selectedEvent?.date}
+                        <br />
+                        <strong>Location:</strong> {selectedEvent?.location}
+                        <br />
+                        <strong>Description:</strong> {selectedEvent?.description}
                     </DialogContentText>
-                    <Select
-                        fullWidth
-                        value={ticketType}
-                        onChange={(e) => setTicketType(e.target.value)}
-                        label="Ticket Type"
-                        sx={{ marginTop: '16px' }}
-                    >
-                        <MenuItem value="Standard">Standard</MenuItem>
-                        <MenuItem value="VIP">VIP</MenuItem>
-                    </Select>
-                    <Select
-                        fullWidth
-                        value={paymentStatus}
-                        onChange={(e) => setPaymentStatus(e.target.value)}
-                        label="Payment Status"
-                        sx={{ marginTop: '16px' }}
-                    >
-                        <MenuItem value="Paid">Paid</MenuItem>
-                        <MenuItem value="Unpaid">Unpaid</MenuItem>
-                    </Select>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
-                    <Button onClick={handleRegistration} variant="contained" color="primary">
-                        Register
+                    <Button onClick={() => setDetailsDialogOpen(false)} color="primary">
+                        Close
                     </Button>
                 </DialogActions>
             </Dialog>
 
-            {/* Snackbar for Notifications */}
+            <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+    <DialogTitle>Payment for {selectedEvent?.event_name}</DialogTitle>
+    <DialogContent>
+        {/* Ticket Type Selection */}
+        <DialogContentText>Choose your ticket type:</DialogContentText>
+        <Select
+            fullWidth
+            value={ticketType}
+            onChange={(e) => setTicketType(e.target.value)}
+            sx={{ marginTop: '16px' }}
+        >
+            <MenuItem value="Standard">Standard</MenuItem>
+            <MenuItem value="VIP">VIP</MenuItem>
+        </Select>
+
+        {/* Payment Method Selection */}
+        <DialogContentText sx={{ marginTop: '16px' }}>Pay With:</DialogContentText>
+        <Select
+            fullWidth
+            value={paymentMethod}
+            onChange={(e) => setPaymentMethod(e.target.value)}
+            sx={{ marginTop: '16px' }}
+        >
+            <MenuItem value="GCash">GCash</MenuItem>
+            <MenuItem value="Card">Card</MenuItem>
+        </Select>
+
+        {/* Conditional Payment Details Input */}
+        {paymentMethod === 'GCash' && (
+            <TextField
+                fullWidth
+                label="Enter GCash Number"
+                value={paymentDetails}
+                onChange={(e) => setPaymentDetails(e.target.value)}
+                sx={{ marginTop: '16px' }}
+            />
+        )}
+        {paymentMethod === 'Card' && (
+            <TextField
+                fullWidth
+                label="Enter Card Number"
+                value={paymentDetails}
+                onChange={(e) => setPaymentDetails(e.target.value)}
+                sx={{ marginTop: '16px' }}
+            />
+        )}
+
+        {/* Fixed Payment Amount and Input for Validation */}
+        <DialogContentText sx={{ marginTop: '16px' }}>
+            <strong>PHP 250</strong>
+        </DialogContentText>
+        <TextField
+            fullWidth
+            type="number"
+            label="Enter Payment Amount"
+            value={paymentAmount}
+            onChange={(e) => setPaymentAmount(e.target.value)}
+            sx={{ marginTop: '16px' }}
+        />
+        {errorMessage && (
+            <Typography color="error" sx={{ marginTop: '8px' }}>
+                {errorMessage}
+            </Typography>
+        )}
+    </DialogContent>
+    <DialogActions>
+        <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
+        <Button
+            variant="contained"
+            color="primary"
+            onClick={handlePaymentSubmission}
+        >
+            PAY 250
+        </Button>
+    </DialogActions>
+</Dialog>
+
+
             <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose}>
                 <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
                     {snackbarMessage}
                 </Alert>
             </Snackbar>
+            {/* Success Dialog */}
+        <Dialog open={successDialogOpen} onClose={() => setSuccessDialogOpen(false)}>
+            <DialogTitle>Registration Successful</DialogTitle>
+            <DialogContent>
+                <DialogContentText>{successMessage}</DialogContentText>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={() => setSuccessDialogOpen(false)} color="primary">
+                    Close
+                </Button>
+            </DialogActions>
+        </Dialog>
         </Container>
     );
 };

@@ -1,52 +1,97 @@
 .create-event-page {
     background-image: url('../images/temp111.jpg'); /* Background image for Create Event */
-    background-size: cover;
-    background-position: center;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
+    background-size: cover; /* Ensure the background fully covers the viewport */
+    background-position: center; /* Center the background image */
+    background-attachment: fixed; /* Make the background stay fixed during scroll */
+    min-height: 100vh; /* Full viewport height */
+    display: flex; /* Flexbox for centering */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    padding: 20px; /* Add padding around the edges */
+    overflow: hidden; /* Prevent content overflow issues */
 }
 
 .create-event-content {
-    background-color: rgba(255, 255, 255, 0.8); /* Light background for form */
-    padding: 40px;
-    border-radius: 10px;
-    max-width: 500px;
-    width: 100%;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: rgba(255, 255, 255, 0.9); /* Slightly increase opacity for better contrast */
+    padding: 40px; /* Inner padding for spacing */
+    border-radius: 15px; /* Increase border radius for a smoother look */
+    max-width: 500px; /* Limit the form's maximum width */
+    width: 100%; /* Form takes the full width of its container */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Add a stronger shadow for depth */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth hover animation */
+}
+
+.create-event-content:hover {
+    transform: scale(1.02); /* Slightly enlarge on hover */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Stronger shadow on hover */
 }
 
 .create-event-content h1 {
-    font-size: 2.5rem;
-    text-align: center;
-    margin-bottom: 30px;
+    font-size: 2.5rem; /* Large heading size */
+    text-align: center; /* Center align the heading */
+    margin-bottom: 30px; /* Space below the heading */
+    color: #333; /* Darker text for contrast */
+    font-family: 'Arial', sans-serif; /* Clean font family */
 }
 
 .create-event-content form {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+    display: flex; /* Flexbox for form alignment */
+    flex-direction: column; /* Stack elements vertically */
+    gap: 20px; /* Add spacing between inputs */
 }
 
-.create-event-content input, .create-event-content textarea {
-    padding: 12px;
-    font-size: 1rem;
-    border-radius: 5px;
-    border: 1px solid #ddd;
+.create-event-content input, .create-event-content textarea, .create-event-content select {
+    padding: 12px; /* Padding inside inputs */
+    font-size: 1rem; /* Uniform font size */
+    border-radius: 5px; /* Rounded corners */
+    border: 1px solid #ddd; /* Light border */
+    font-family: 'Arial', sans-serif; /* Consistent font */
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1); /* Subtle inner shadow */
+    background-color: #fff; /* White background */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Smooth focus animation */
+}
+
+.create-event-content input:focus, .create-event-content textarea:focus, .create-event-content select:focus {
+    border-color: #4CAF50; /* Highlight border on focus */
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.5); /* Add green glow on focus */
+    outline: none; /* Remove default outline */
 }
 
 .create-event-content button {
-    background-color: #4CAF50;
-    color: white;
-    padding: 12px;
-    font-size: 1.2rem;
-    border-radius: 5px;
-    border: none;
-    cursor: pointer;
+    background-color: #4CAF50; /* Green background */
+    color: white; /* White text */
+    padding: 12px; /* Add padding inside the button */
+    font-size: 1.2rem; /* Slightly larger font size */
+    font-weight: bold; /* Bold font for prominence */
+    border-radius: 5px; /* Rounded corners */
+    border: none; /* Remove border */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth hover animation */
 }
 
 .create-event-content button:hover {
-    background-color: #45a049;
+    background-color: #45a049; /* Darker green on hover */
+    transform: translateY(-2px); /* Slight lift on hover */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Shadow for lifted effect */
+}
+
+.create-event-content textarea {
+    resize: none; /* Disable resizing for a clean layout */
+    height: 100px; /* Fixed height for text area */
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .create-event-content {
+        padding: 20px; /* Reduce padding for smaller screens */
+        border-radius: 10px; /* Slightly reduce border radius */
+    }
+
+    .create-event-content h1 {
+        font-size: 2rem; /* Smaller font for heading */
+    }
+
+    .create-event-content input, .create-event-content textarea, .create-event-content select, .create-event-content button {
+        font-size: 1rem; /* Adjust font size for smaller screens */
+    }
 }

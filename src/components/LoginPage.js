@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import {jwtDecode} from "jwt-decode"; // Corrected the import
+import { jwtDecode } from 'jwt-decode'; // Corrected the import
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ErrorIcon from '@mui/icons-material/Error';
@@ -10,15 +10,15 @@ import './LoginPage.css';
 const LoginPage = ({ setLoggedIn }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [openDialog, setOpenDialog] = useState(false); // To control dialog visibility
-    const [dialogType, setDialogType] = useState('success'); // Dialog type - success or error
-    const [message, setMessage] = useState(''); // Message to display in the dialog
+    const [openDialog, setOpenDialog] = useState(false);
+    const [dialogType, setDialogType] = useState('success');
+    const [message, setMessage] = useState('');
     const navigate = useNavigate();
 
     const handleLogin = async (e) => {
         e.preventDefault();
 
-        const user = { emailAddress: email, password: password }; // Make sure field names match backend expectation
+        const user = { emailAddress: email, password: password };
 
         try {
             const response = await axios.post('http://localhost:8080/api/auth/login', user);
@@ -28,17 +28,23 @@ const LoginPage = ({ setLoggedIn }) => {
 
                 // Decode the token to get user information
                 const decodedToken = jwtDecode(token);
-                console.log("Decoded Token:", decodedToken); // Log the decoded token to see its structure
+                console.log("Decoded Token:", decodedToken);
 
-                // Use 'sub' as the email field based on the token structure
-                const userEmail = decodedToken.sub;
+                // Extract user information from the token
+                const userEmail = decodedToken.sub; // Email
+                const userID = decodedToken.userID; // Assuming 'userID' is a claim in the token
 
-                // Store the token and email in localStorage
+                // Store the token and extracted information in localStorage
                 localStorage.setItem('token', token);
                 if (userEmail) {
                     localStorage.setItem('userEmail', userEmail);
                 } else {
                     console.error("Email not found in the decoded token.");
+                }
+                if (userID) {
+                    localStorage.setItem('userID', userID);
+                } else {
+                    console.error("User ID not found in the decoded token.");
                 }
 
                 // Store the role and isAdmin in localStorage
@@ -69,7 +75,7 @@ const LoginPage = ({ setLoggedIn }) => {
     };
 
     const handleCloseDialog = () => {
-        setOpenDialog(false); // Close the dialog
+        setOpenDialog(false);
     };
 
     return (
@@ -101,7 +107,6 @@ const LoginPage = ({ setLoggedIn }) => {
                         </div>
                         <button type="submit" className="login-button">Login</button>
                     </form>
-                    {/* Register Button */}
                     <div className="register-link">
                         <button onClick={() => navigate('/register')} className="register-button">
                             Register
@@ -114,7 +119,6 @@ const LoginPage = ({ setLoggedIn }) => {
                 </div>
             </div>
 
-            {/* Dialog for success or error messages */}
             <Dialog open={openDialog} onClose={handleCloseDialog}>
                 <DialogTitle>
                     <div className="dialog-title">

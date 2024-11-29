@@ -1,7 +1,19 @@
-// ProfilePage.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { TextField, Button, Grid, Typography, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
+import {
+  TextField,
+  Button,
+  Grid,
+  Typography,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Paper,
+  Box,
+  Container,
+} from '@mui/material';
 import './ProfilePage.css';
 
 const ProfilePage = () => {
@@ -114,86 +126,134 @@ const ProfilePage = () => {
   };
 
   return (
-    <div className="profile-container">
-      <Typography variant="h4" className="profile-title">
-        Edit Profile
-      </Typography>
-      <Grid container spacing={3} className="profile-grid">
-        <Grid item xs={12} md={6} className="profile-details-section">
-          <Typography variant="h6" className="section-title">Current Details</Typography>
-          <Typography className="detail-item"><strong>First Name:</strong> {user.firstName}</Typography>
-          <Typography className="detail-item"><strong>Last Name:</strong> {user.lastName}</Typography>
-          <Typography className="detail-item"><strong>Email:</strong> {user.emailAddress}</Typography>
-        </Grid>
+    <Container maxWidth="md" style={{ marginTop: '40px' }}>
+      <Paper elevation={3} style={{ padding: '20px' }}>
+        <Typography variant="h4" align="center" gutterBottom>
+          Edit Profile
+        </Typography>
 
-        <Grid item xs={12} md={6} className="profile-edit-section">
-          <Typography variant="h6" className="section-title">Edit Details</Typography>
-          <TextField
-            label="First Name"
-            name="firstName"
-            value={user.firstName}
-            variant="outlined"
-            fullWidth
-            onChange={handleChange}
-            disabled={!isEditing}
-            className="text-field"
-          />
-          <TextField
-            label="Last Name"
-            name="lastName"
-            value={user.lastName}
-            variant="outlined"
-            fullWidth
-            onChange={handleChange}
-            disabled={!isEditing}
-            className="text-field"
-          />
-          <TextField
-            label="Email"
-            name="emailAddress"
-            value={user.emailAddress}
-            variant="outlined"
-            fullWidth
-            onChange={handleChange}
-            disabled={!isEditing}
-            error={Boolean(errors.email)}
-            helperText={errors.email}
-            className="text-field"
-          />
-          <TextField
-            label="Password"
-            name="password"
-            value={user.password}
-            type="password"
-            variant="outlined"
-            fullWidth
-            onChange={handleChange}
-            disabled={!isEditing}
-            error={Boolean(errors.password)}
-            helperText={errors.password}
-            className="text-field"
-          />
+        <Grid container spacing={4}>
+          {/* Current Details Section */}
+          <Grid item xs={12} md={6}>
+            <Box
+              sx={{
+                backgroundColor: '#f4f4f4',
+                padding: '16px',
+                borderRadius: '8px',
+                boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
+              }}
+            >
+              <Typography variant="h6" gutterBottom>
+                Current Details
+              </Typography>
+              <Typography>
+                <strong>First Name:</strong> {user.firstName}
+              </Typography>
+              <Typography>
+                <strong>Last Name:</strong> {user.lastName}
+              </Typography>
+              <Typography>
+                <strong>Email:</strong> {user.emailAddress}
+              </Typography>
+            </Box>
+          </Grid>
 
-          <div className="button-container">
-            {isEditing ? (
-              <>
-                <Button variant="contained" onClick={handleCancel} className="cancel-button">
-                  Cancel
+          {/* Edit Details Section */}
+          <Grid item xs={12} md={6}>
+            <Typography variant="h6" gutterBottom>
+              Edit Details
+            </Typography>
+            <form noValidate autoComplete="off">
+              <TextField
+                label="First Name"
+                name="firstName"
+                value={user.firstName}
+                variant="outlined"
+                fullWidth
+                onChange={handleChange}
+                disabled={!isEditing}
+                margin="normal"
+              />
+              <TextField
+                label="Last Name"
+                name="lastName"
+                value={user.lastName}
+                variant="outlined"
+                fullWidth
+                onChange={handleChange}
+                disabled={!isEditing}
+                margin="normal"
+              />
+              <TextField
+                label="Email"
+                name="emailAddress"
+                value={user.emailAddress}
+                variant="outlined"
+                fullWidth
+                onChange={handleChange}
+                disabled={!isEditing}
+                error={Boolean(errors.email)}
+                helperText={errors.email}
+                margin="normal"
+              />
+              <TextField
+                label="Password"
+                name="password"
+                value={user.password}
+                type="password"
+                variant="outlined"
+                fullWidth
+                onChange={handleChange}
+                disabled={!isEditing}
+                error={Boolean(errors.password)}
+                helperText={errors.password}
+                margin="normal"
+              />
+            </form>
+
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                marginTop: '16px',
+              }}
+            >
+              {isEditing ? (
+                <>
+                  <Button
+                    variant="outlined"
+                    color="secondary"
+                    onClick={handleCancel}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleSave}
+                  >
+                    Save
+                  </Button>
+                </>
+              ) : (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleEdit}
+                >
+                  Edit Profile
                 </Button>
-                <Button variant="contained" onClick={handleSave} className="save-button">
-                  Save
-                </Button>
-              </>
-            ) : (
-              <Button variant="contained" onClick={handleEdit} className="edit-button">
-                Edit Profile
-              </Button>
-            )}
-          </div>
+              )}
+            </Box>
+          </Grid>
         </Grid>
-      </Grid>
+      </Paper>
 
-      <Dialog open={confirmDialogOpen} onClose={() => setConfirmDialogOpen(false)}>
+      {/* Confirm Dialog */}
+      <Dialog
+        open={confirmDialogOpen}
+        onClose={() => setConfirmDialogOpen(false)}
+      >
         <DialogTitle>Discard Changes?</DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -201,15 +261,22 @@ const ProfilePage = () => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setConfirmDialogOpen(false)} color="primary">
+          <Button
+            onClick={() => setConfirmDialogOpen(false)}
+            color="primary"
+          >
             Keep Editing
           </Button>
-          <Button onClick={handleConfirmDiscardChanges} color="secondary" autoFocus>
+          <Button
+            onClick={handleConfirmDiscardChanges}
+            color="secondary"
+            autoFocus
+          >
             Discard Changes
           </Button>
         </DialogActions>
       </Dialog>
-    </div>
+    </Container>
   );
 };
 

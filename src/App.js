@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import HomePage from './components/HomePage';
+import UserRegistrations from './components/UserRegistrations';
 import EventsPage from './components/EventsPage';
 import AboutPage from './components/AboutPage';
 import CreatePage from './components/CreatePage';
@@ -11,7 +12,7 @@ import RegisterPage from './components/RegisterPage';
 import ProfilePage from './components/ProfilePage';
 import AdminDashboard from './components/admin/AdminDashboard';
 import AdminEvents from './components/admin/AdminEvents';
-import AdminReminders from './components/admin/AdminReminders';
+import AdminRegistrations from './components/admin/AdminRegistrations';
 import AdminUsers from './components/admin/AdminUsers';
 import Sidebar from './components/admin/Sidebar';
 import SearchResultsPage from './components/SearchResultsPage';
@@ -73,6 +74,10 @@ const App = () => {
                                     element={<><Navbar logout={handleLogout} userRole={userRole} /><HomePage userRole={userRole} /></>} 
                                 />
                                 <Route 
+                                    path="/registrations" 
+                                    element={<><Navbar logout={handleLogout} userRole={userRole} /><UserRegistrations /></>} 
+                                />
+                                <Route 
                                     path="/events" 
                                     element={<><Navbar logout={handleLogout} userRole={userRole} /><EventsPage /></>} 
                                 />
@@ -132,13 +137,13 @@ const App = () => {
 
         {/* Admin Reminders Route */}
         <Route 
-            path="/admin/reminders" 
+            path="/admin/registrations" 
             element={
                 <>
                         <Navbar logout={handleLogout} userRole={userRole} notifications={notifications} />
                         <div className="admin-container">
                         <Sidebar />  {/* Sidebar on the left */}
-                        <AdminReminders addNotification={addNotification} />
+                        <AdminRegistrations addNotification={addNotification} />
                     </div>
                 </>
             } 
@@ -160,6 +165,10 @@ const App = () => {
                                 <Route 
                                     path="/home" 
                                     element={<><Navbar logout={handleLogout} userRole={userRole} /><HomePage userRole={userRole} /></>} 
+                                />
+                                <Route 
+                                    path="/registrations" 
+                                    element={<><Navbar logout={handleLogout} userRole={userRole} /><UserRegistrations /></>} 
                                 />
                                 <Route 
                                     path="/events" 

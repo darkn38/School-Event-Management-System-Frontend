@@ -104,6 +104,7 @@ const Navbar = ({ logout }) => {
                 {/* Navigation Links */}
                 <div className="nav-links">
                     <Link to="/home">Home</Link>
+                    <Link to="/registrations">Registrations</Link>
                     <Link to="/events">Events</Link>
                     <Link to="/about">About Us</Link>
                     <Link to="/create">Create</Link>

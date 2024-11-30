@@ -13,7 +13,7 @@ const Sidebar = () => {
   const navigationItems = [
     { title: 'Dashboard', icon: <DashboardIcon />, path: '/admin' },
     { title: 'Events', icon: <EventIcon />, path: '/admin/events' },
-    { title: 'Reminders', icon: <NotificationsIcon />, path: '/admin/reminders' },
+    { title: 'Registrations', icon: <NotificationsIcon />, path: '/admin/registrations' },
     { title: 'Users', icon: <PeopleIcon />, path: '/admin/users' },
   ];
 

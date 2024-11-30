@@ -1,0 +1,86 @@
+.admin-registrations-container {
+    margin-left: 250px; /* Align the content considering the sidebar */
+    padding: 20px;
+    background-image: url('../../images/temp111.jpg');
+    background-size: cover; /* Ensures the background image covers the entire container */
+    background-position: center; /* Centers the image */
+    background-attachment: fixed; /* Keeps the image fixed when scrolling (optional) */
+    min-height: 100vh; /* Ensures the container takes the full height of the screen */
+}
+
+.admin-registrations-container .MuiTableCell-body {
+    background-color: transparent !important;
+}
+
+.admin-registrations-container .registration-form {
+    margin-bottom: 20px;
+}
+
+.admin-registrations-container input {
+    margin: 10px 0;
+    padding: 8px;
+    width: 200px;
+}
+
+.admin-registrations-container .submit-button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.admin-registrations-container .submit-button:hover {
+    background-color: #45a049;
+}
+
+.admin-registrations-container .edit-button,
+.admin-registrations-container .delete-button {
+    margin: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.admin-registrations-container .edit-button {
+    background-color: #ffa500;
+    color: white;
+}
+
+.admin-registrations-container .delete-button {
+    background-color: #f44336;
+    color: white;
+}
+
+.admin-registrations-container .edit-button:hover {
+    background-color: #ff9800;
+}
+
+.admin-registrations-container .delete-button:hover {
+    background-color: #e57373;
+}
+
+/* Dialog Actions */
+.admin-registrations-container .dialog-actions button {
+    margin: 0 10px;
+    padding: 10px 15px;
+    border-radius: 4px;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.admin-registrations-container .dialog-actions .cancel-button {
+    background-color: #808080;
+    color: white;
+}
+
+.admin-registrations-container .dialog-actions .delete-button {
+    background-color: #d32f2f;
+    color: white;
+}
+
+.admin-registrations-container .dialog-actions button:hover {
+    opacity: 0.9;
+}
+

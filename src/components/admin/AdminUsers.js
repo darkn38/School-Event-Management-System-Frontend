@@ -45,7 +45,7 @@ const User = () => {
   const [currentUserId, setCurrentUserId] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
-
+  const [confirmationDialog, setConfirmationDialog] = useState(false); // Confirmation dialog for update
 
   const apiUrl = 'http://localhost:8080/api/users';
 
@@ -79,6 +79,7 @@ const User = () => {
             Authorization: `Bearer ${token}`,
           },
         });
+        setConfirmationDialog(true); // Show confirmation dialog after update
       } else {
         await axios.post(apiUrl, user, {
           headers: {
@@ -108,33 +109,37 @@ const User = () => {
   };
 
   // Open delete confirmation dialog
-const confirmDeleteUser = (id) => {
-  setUserToDelete(id);
-  setOpenDialog(true);
-};
+  const confirmDeleteUser = (id) => {
+    setUserToDelete(id);
+    setOpenDialog(true);
+  };
 
-// Delete user after confirmation
-const handleDelete = async () => {
-  try {
-    const token = localStorage.getItem('token');
-    await axios.delete(`${apiUrl}/${userToDelete}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    fetchUsers();
+  // Delete user after confirmation
+  const handleDelete = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      await axios.delete(`${apiUrl}/${userToDelete}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      fetchUsers();
+      setOpenDialog(false);
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      setOpenDialog(false);
+    }
+  };
+
+  // Close delete dialog
+  const handleCloseDialog = () => {
     setOpenDialog(false);
-  } catch (error) {
-    console.error('Error deleting user:', error);
-    setOpenDialog(false);
-  }
-};
+  };
 
-// Close delete dialog
-const handleCloseDialog = () => {
-  setOpenDialog(false);
-};
-
+  // Close confirmation dialog
+  const handleCloseConfirmationDialog = () => {
+    setConfirmationDialog(false);
+  };
 
   return (
     <div className="user-container" style={{ marginLeft: '250px' }}>
@@ -213,24 +218,49 @@ const handleCloseDialog = () => {
           </TableBody>
         </Table>
       </TableContainer>
-      <Dialog
-  open={openDialog}
-  onClose={handleCloseDialog}
-  aria-labelledby="alert-dialog-title"
-  aria-describedby="alert-dialog-description"
->
-  <DialogTitle id="alert-dialog-title">{"Confirm User Deletion"}</DialogTitle>
-  <DialogContent>
-    <DialogContentText id="alert-dialog-description">
-      Are you sure you want to delete this user? This action cannot be undone.
-    </DialogContentText>
-  </DialogContent>
-  <DialogActions className="dialog-actions">
-    <Button onClick={handleCloseDialog} className="cancel-button">Cancel</Button>
-    <Button onClick={handleDelete} className="delete-button" autoFocus>Delete</Button>
-  </DialogActions>
-</Dialog>
 
+      {/* Delete Confirmation Dialog */}
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Confirm User Deletion"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to delete this user? This action cannot be undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} className="cancel-button">
+            Cancel
+          </Button>
+          <Button onClick={handleDelete} className="delete-button" autoFocus>
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Update Confirmation Dialog */}
+      <Dialog
+        open={confirmationDialog}
+        onClose={handleCloseConfirmationDialog}
+        aria-labelledby="update-dialog-title"
+        aria-describedby="update-dialog-description"
+      >
+        <DialogTitle id="update-dialog-title">{"User Updated"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="update-dialog-description">
+            The user details have been updated successfully!
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseConfirmationDialog} color="primary" autoFocus>
+            OK
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

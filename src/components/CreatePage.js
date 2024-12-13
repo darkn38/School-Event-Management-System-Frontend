@@ -15,11 +15,13 @@ const CreateEventPage = () => {
         event_id: 0,
         date: '',
         description: '',
-        event_name: '',
-        event_type: '',
+        eventName: '',
+        eventType: '',
         location: '',
         time: '',
     });
+    const [price, setPrice] = useState('');
+    const [showPriceField, setShowPriceField] = useState(false);
     const [showSuccessMessage, setShowSuccessMessage] = useState(false);
     const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -34,7 +36,7 @@ const CreateEventPage = () => {
 
     const fetchEvent = async (eventId) => {
         try {
-            const token = localStorage.getItem('token'); // Get token from localStorage
+            const token = localStorage.getItem('token');
             const response = await axios.get(`http://localhost:8080/events/${eventId}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -47,42 +49,72 @@ const CreateEventPage = () => {
     };
 
     const handleChange = (e) => {
-        setEvent({ ...event, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+        setEvent({ ...event, [name]: value });
+
+        if (name === 'eventType' && value === 'Miscellaneous Events') {
+            setShowPriceField(true);
+        } else if (name === 'eventType') {
+            setShowPriceField(false);
+            setPrice('');
+        }
+    };
+
+    const handlePriceChange = (e) => {
+        setPrice(e.target.value);
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const token = localStorage.getItem('token'); // Get token from localStorage
+            const token = localStorage.getItem('token');
+            const createdBy = localStorage.getItem('userEmail'); // Assuming the email is stored in localStorage
+
+            if (!createdBy) {
+                console.error('User information not found in localStorage.');
+                return;
+            }
+
             if (eventId) {
                 // Update existing event
-                await axios.put(`http://localhost:8080/events/${eventId}`, {
-                    date: event.date,
-                    description: event.description,
-                    event_name: event.event_name,
-                    event_type: event.event_type,
-                    location: event.location,
-                    time: event.time,
-                }, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
+                await axios.put(
+                    `http://localhost:8080/events/${eventId}`,
+                    {
+                        date: event.date,
+                        description: event.description,
+                        eventName: event.eventName,
+                        eventType: event.eventType,
+                        location: event.location,
+                        time: event.time,
+                        created_by: createdBy, // Include created_by in updates
                     },
-                });
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
             } else {
                 // Create new event
-                await axios.post('http://localhost:8080/events', {
-                    date: event.date,
-                    description: event.description,
-                    event_name: event.event_name,
-                    event_type: event.event_type,
-                    location: event.location,
-                    time: event.time,
-                }, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
+                await axios.post(
+                    'http://localhost:8080/events',
+                    {
+                        date: event.date,
+                        description: event.description,
+                        eventName: event.eventName,
+                        eventType: event.eventType,
+                        location: event.location,
+                        time: event.time,
+                        created_by: createdBy, // Include created_by for new events
                     },
-                });
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
             }
+
             setShowSuccessMessage(true);
             setTimeout(() => {
                 setShowSuccessMessage(false);
@@ -94,7 +126,7 @@ const CreateEventPage = () => {
     };
 
     const handleDialogClose = () => {
-        setDialogOpen(false); // Close the success dialog without redirection
+        setDialogOpen(false);
     };
 
     return (
@@ -109,17 +141,17 @@ const CreateEventPage = () => {
                 <form onSubmit={handleSubmit}>
                     <input
                         type="text"
-                        name="event_name"
+                        name="eventName"
                         placeholder="Event Name"
-                        value={event.event_name}
+                        value={event.eventName}
                         onChange={handleChange}
                         required
                     />
-                    
+
                     {/* Event Type Dropdown */}
                     <select
-                        name="event_type"
-                        value={event.event_type}
+                        name="eventType"
+                        value={event.eventType}
                         onChange={handleChange}
                         required
                     >
@@ -132,7 +164,18 @@ const CreateEventPage = () => {
                             </option>
                         ))}
                     </select>
-                    
+
+                    {/* Price Field for Miscellaneous Events */}
+                    {showPriceField && (
+                        <input
+                            type="text"
+                            name="price"
+                            placeholder="Enter Price"
+                            value={price}
+                            onChange={handlePriceChange}
+                        />
+                    )}
+
                     <input
                         type="date"
                         name="date"
@@ -147,7 +190,7 @@ const CreateEventPage = () => {
                         onChange={handleChange}
                         required
                     />
-                    
+
                     {/* Location Dropdown */}
                     <select
                         name="location"
@@ -164,7 +207,7 @@ const CreateEventPage = () => {
                             </option>
                         ))}
                     </select>
-                    
+
                     <textarea
                         name="description"
                         placeholder="Event Description"
@@ -172,7 +215,7 @@ const CreateEventPage = () => {
                         onChange={handleChange}
                         required
                     ></textarea>
-                    
+
                     <button type="submit" className="create-event-button">
                         {eventId ? 'Update Event' : 'Create Event'}
                     </button>

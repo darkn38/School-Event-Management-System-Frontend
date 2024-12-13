@@ -16,6 +16,16 @@ import AdminRegistrations from './components/admin/AdminRegistrations';
 import AdminUsers from './components/admin/AdminUsers';
 import Sidebar from './components/admin/Sidebar';
 import SearchResultsPage from './components/SearchResultsPage';
+const resizeObserverErrorHandler = e => {
+    if (e.message && e.message.startsWith('ResizeObserver loop')) {
+      // Ignore ResizeObserver loop limit exceeded error
+      return;
+    }
+    console.error(e);
+  };
+  
+  window.addEventListener('error', resizeObserverErrorHandler);
+  
 
 const App = () => {
     const [loggedIn, setLoggedIn] = useState(false);

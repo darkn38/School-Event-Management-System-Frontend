@@ -5,14 +5,14 @@ import {
   Button,
   Grid,
   Typography,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
   Paper,
   Box,
   Container,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
 } from '@mui/material';
 import './ProfilePage.css';
 
@@ -21,115 +21,92 @@ const ProfilePage = () => {
     firstName: '',
     lastName: '',
     emailAddress: '',
-    password: '',
   });
-  const [isEditing, setIsEditing] = useState(false);
-  const [unsavedChanges, setUnsavedChanges] = useState(false);
-  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [errorDialog, setErrorDialog] = useState(false);
+  const [confirmationDialog, setConfirmationDialog] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
-  const [errors, setErrors] = useState({
-    email: '',
-    password: '',
-  });
+  const apiUrl = 'http://localhost:8080/api/users/profile';
+
+  // Fetch current user profile
+  const fetchUserProfile = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(apiUrl, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setUser({
+        firstName: response.data.firstName,
+        lastName: response.data.lastName,
+        emailAddress: response.data.emailAddress,
+      });
+    } catch (error) {
+      console.error('Error fetching user profile:', error);
+      setErrorMessage('Failed to fetch user details. Please try again.');
+      setErrorDialog(true);
+    }
+  };
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      axios
-        .get('http://localhost:8080/api/users/profile', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((response) => {
-          setUser(response.data);
-        })
-        .catch((error) => {
-          console.error('Error fetching user details:', error);
-        });
-    }
+    fetchUserProfile();
   }, []);
 
-  const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  const isStrongPassword = (password) => password.length >= 8;
-
+  // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setUser((prevUser) => ({
       ...prevUser,
       [name]: value,
     }));
-    setUnsavedChanges(true);
-
-    if (name === 'emailAddress') {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        email: isValidEmail(value) ? '' : 'Invalid email format',
-      }));
-    }
-
-    if (name === 'password') {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        password: isStrongPassword(value) ? '' : 'Password must be at least 8 characters',
-      }));
-    }
   };
 
-  const handleCancel = () => {
-    if (unsavedChanges) {
-      setConfirmDialogOpen(true);
-    } else {
-      setIsEditing(false);
+  // Save user profile changes
+  const handleSave = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      await axios.put(apiUrl, user, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setConfirmationDialog(true); // Show confirmation dialog
+      setEditMode(false);
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      const errorMsg =
+        error.response?.data?.message || 'Failed to update profile. Please try again.';
+      setErrorMessage(errorMsg);
+      setErrorDialog(true);
     }
-  };
-
-  const handleConfirmDiscardChanges = () => {
-    setConfirmDialogOpen(false);
-    setIsEditing(false);
-    setUnsavedChanges(false);
   };
 
   const handleEdit = () => {
-    setIsEditing(true);
+    setEditMode(true);
   };
 
-  const handleSave = () => {
-    if (errors.email || errors.password) {
-      alert('Please fix validation errors before saving.');
-      return;
-    }
+  const handleCancel = () => {
+    setEditMode(false);
+    fetchUserProfile(); // Reset user data to original
+  };
 
-    const token = localStorage.getItem('token');
-    if (token) {
-      axios
-        .put(
-          'http://localhost:8080/api/users/profile',
-          { ...user },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        )
-        .then((response) => {
-          setUser(response.data);
-          setIsEditing(false);
-          setUnsavedChanges(false);
-          alert('Profile saved successfully.');
-        })
-        .catch((error) => {
-          console.error('Error updating user details:', error);
-          alert('Failed to save profile. Please try again.');
-        });
-    }
+  // Handle error dialog close
+  const handleCloseErrorDialog = () => {
+    setErrorDialog(false);
+  };
+
+  // Handle confirmation dialog close
+  const handleCloseConfirmationDialog = () => {
+    setConfirmationDialog(false);
   };
 
   return (
     <Container maxWidth="md" style={{ marginTop: '40px' }}>
       <Paper elevation={3} style={{ padding: '20px' }}>
         <Typography variant="h4" align="center" gutterBottom>
-          Edit Profile
+          My Profile
         </Typography>
 
         <Grid container spacing={4}>
@@ -140,7 +117,6 @@ const ProfilePage = () => {
                 backgroundColor: '#f4f4f4',
                 padding: '16px',
                 borderRadius: '8px',
-                boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
               }}
             >
               <Typography variant="h6" gutterBottom>
@@ -168,111 +144,92 @@ const ProfilePage = () => {
                 label="First Name"
                 name="firstName"
                 value={user.firstName}
+                onChange={handleChange}
                 variant="outlined"
                 fullWidth
-                onChange={handleChange}
-                disabled={!isEditing}
                 margin="normal"
+                disabled={!editMode}
               />
               <TextField
                 label="Last Name"
                 name="lastName"
                 value={user.lastName}
+                onChange={handleChange}
                 variant="outlined"
                 fullWidth
-                onChange={handleChange}
-                disabled={!isEditing}
                 margin="normal"
+                disabled={!editMode}
               />
               <TextField
                 label="Email"
                 name="emailAddress"
                 value={user.emailAddress}
+                onChange={handleChange}
                 variant="outlined"
                 fullWidth
-                onChange={handleChange}
-                disabled={!isEditing}
-                error={Boolean(errors.email)}
-                helperText={errors.email}
                 margin="normal"
-              />
-              <TextField
-                label="Password"
-                name="password"
-                value={user.password}
-                type="password"
-                variant="outlined"
-                fullWidth
-                onChange={handleChange}
-                disabled={!isEditing}
-                error={Boolean(errors.password)}
-                helperText={errors.password}
-                margin="normal"
+                disabled={!editMode}
               />
             </form>
-
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                marginTop: '16px',
-              }}
-            >
-              {isEditing ? (
-                <>
-                  <Button
-                    variant="outlined"
-                    color="secondary"
-                    onClick={handleCancel}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleSave}
-                  >
-                    Save
-                  </Button>
-                </>
-              ) : (
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleEdit}
-                >
-                  Edit Profile
-                </Button>
-              )}
-            </Box>
           </Grid>
         </Grid>
+
+        <Box
+          sx={{ display: 'flex', justifyContent: 'space-between', marginTop: '16px' }}
+        >
+          {editMode ? (
+            <>
+              <Button variant="outlined" color="secondary" onClick={handleCancel}>
+                Cancel
+              </Button>
+              <Button variant="contained" color="primary" onClick={handleSave}>
+                Save
+              </Button>
+            </>
+          ) : (
+            <Button variant="contained" color="primary" onClick={handleEdit}>
+              Edit Profile
+            </Button>
+          )}
+        </Box>
       </Paper>
 
-      {/* Confirm Dialog */}
+      {/* Error Dialog */}
       <Dialog
-        open={confirmDialogOpen}
-        onClose={() => setConfirmDialogOpen(false)}
+        open={errorDialog}
+        onClose={handleCloseErrorDialog}
+        aria-labelledby="error-dialog-title"
+        aria-describedby="error-dialog-description"
       >
-        <DialogTitle>Discard Changes?</DialogTitle>
+        <DialogTitle id="error-dialog-title">{"Error"}</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            You have unsaved changes. Are you sure you want to discard them?
+          <DialogContentText id="error-dialog-description">
+            {errorMessage}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button
-            onClick={() => setConfirmDialogOpen(false)}
-            color="primary"
-          >
-            Keep Editing
+          <Button onClick={handleCloseErrorDialog} color="primary" autoFocus>
+            Close
           </Button>
-          <Button
-            onClick={handleConfirmDiscardChanges}
-            color="secondary"
-            autoFocus
-          >
-            Discard Changes
+        </DialogActions>
+      </Dialog>
+
+      {/* Confirmation Dialog */}
+      <Dialog
+        open={confirmationDialog}
+        onClose={handleCloseConfirmationDialog}
+        aria-labelledby="confirmation-dialog-title"
+        aria-describedby="confirmation-dialog-description"
+      >
+        <DialogTitle id="confirmation-dialog-title">{"Profile Updated"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="confirmation-dialog-description">
+            Your profile has been updated successfully!
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseConfirmationDialog} color="primary" autoFocus>
+            OK
           </Button>
         </DialogActions>
       </Dialog>

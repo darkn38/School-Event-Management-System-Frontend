@@ -1,94 +1,93 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
 import {
-  PieChart, Pie, Cell, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend,
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Legend,
 } from 'recharts';
 import './AdminDashboard.css';
 
 const AdminDashboard = () => {
-  // State variables for data
   const [events, setEvents] = useState([]);
   const [eventRegistrations, setEventRegistrations] = useState([]);
   const [users, setUsers] = useState([]);
 
+  // Fetch data from APIs
   useEffect(() => {
-    // Retrieve the JWT token from local storage
     const token = localStorage.getItem('token');
-
-    // Check if the token exists
     if (!token) {
       console.error('No token found. Please log in.');
-      // Optionally redirect to login page
-      // window.location.href = '/login';
       return;
     }
 
-    // Set up headers with the token
     const config = {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      headers: { Authorization: `Bearer ${token}` },
     };
 
-    // Fetch events (no token needed as per your security config)
-    axios.get('http://localhost:8080/events')
-      .then(response => setEvents(response.data))
-      .catch(error => console.error('Error fetching events:', error));
+    // Fetch events
+    axios
+      .get('http://localhost:8080/events')
+      .then((response) => setEvents(response.data))
+      .catch((error) => console.error('Error fetching events:', error));
 
-    // Fetch event registrations (token required)
-    axios.get('http://localhost:8080/api/eventregistrations', config)
-      .then(response => setEventRegistrations(response.data))
-      .catch(error => {
+    // Fetch event registrations
+    axios
+      .get('http://localhost:8080/api/eventregistrations', config)
+      .then((response) => setEventRegistrations(response.data))
+      .catch((error) => {
         console.error('Error fetching event registrations:', error);
         if (error.response && error.response.status === 403) {
-          // Handle unauthorized access
           console.error('Access denied. Please ensure you are logged in.');
         }
       });
 
-    // Fetch users (token required)
-    axios.get('http://localhost:8080/api/users', config)
-      .then(response => setUsers(response.data))
-      .catch(error => {
+    // Fetch users
+    axios
+      .get('http://localhost:8080/api/users', config)
+      .then((response) => setUsers(response.data))
+      .catch((error) => {
         console.error('Error fetching users:', error);
         if (error.response && error.response.status === 403) {
-          // Handle unauthorized access
           console.error('Access denied. Please ensure you are logged in.');
         }
       });
   }, []);
 
-  // Debugging logs
-  useEffect(() => {
-    console.log('eventRegistrations:', eventRegistrations);
-  }, [eventRegistrations]);
-
-  useEffect(() => {
-    console.log('users:', users);
-  }, [users]);
-
-  useEffect(() => {
-    console.log('events:', events);
-  }, [events]);
-
-  // Prepare data for the Pie Chart - Registrations per Event
+  // Registrations per Event
   const registrationsPerEvent = useMemo(() => {
     if (!events.length || !eventRegistrations.length) return [];
-
-    return events.map(event => {
-      const count = eventRegistrations.filter(reg => reg.event.eventID === event.eventID).length;
-      return { name: event.eventName, value: count };
+  
+    const data = events.map(event => {
+      const count = eventRegistrations.filter(reg => reg.eventId === event.eventID).length;
+  
+      // Log invalid data for debugging
+      if (!event.eventID || !event.eventName) {
+        console.warn("Invalid event data:", event);
+      }
+  
+      return { name: event.eventName || "Unknown Event", value: count };
     });
+  
+    console.log("registrationsPerEvent:", data); // Debug computed data
+    return data;
   }, [events, eventRegistrations]);
+  
 
-  // Prepare data for the Bar Chart - Registrations Over Time
+  // Registrations by Month
   const registrationsByMonth = useMemo(() => {
     if (!eventRegistrations.length) return [];
 
     const monthCounts = {};
 
-    eventRegistrations.forEach(registration => {
-      if (registration && registration.registrationDate) {
+    eventRegistrations.forEach((registration) => {
+      if (registration?.registrationDate) {
         const dateParts = registration.registrationDate.split('-');
         if (dateParts.length === 3) {
           const dateObj = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
@@ -103,16 +102,37 @@ const AdminDashboard = () => {
       }
     });
 
-    const monthOrder = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const monthOrder = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
     return monthOrder
-      .filter(month => monthCounts[month])
-      .map(month => ({ month, registrations: monthCounts[month] }));
+      .filter((month) => monthCounts[month])
+      .map((month) => ({ month, registrations: monthCounts[month] }));
   }, [eventRegistrations]);
 
-  // Define colors for the charts
-  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#FF6384', '#36A2EB', '#9966FF', '#FF9F40'];
+  const COLORS = [
+    '#0088FE',
+    '#00C49F',
+    '#FFBB28',
+    '#FF8042',
+    '#FF6384',
+    '#36A2EB',
+    '#9966FF',
+    '#FF9F40',
+  ];
 
-  // Handle loading state
+  // Loading state
   if (!events.length || !eventRegistrations.length || !users.length) {
     return <div>Loading...</div>;
   }

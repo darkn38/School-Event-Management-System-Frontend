@@ -72,66 +72,70 @@ const AdminRegistrations = () => {
     e.preventDefault();
     const token = localStorage.getItem("token");
 
-    // Add emailAddress to the registration object
-    const updatedRegistration = {
-      ...registration,
-      emailAddress: "janedoe@example.com", // Replace this with dynamic email if needed
-    };
-
     try {
-      if (editMode) {
-        await axios.put(`${apiUrl}/${currentId}`, updatedRegistration, {
-          headers: { Authorization: `Bearer ${token}` },
+        if (editMode) {
+            await axios.put(`${apiUrl}/${currentId}`, registration, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+        } else {
+            await axios.post(apiUrl, registration, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+        }
+        fetchRegistrations();
+        setRegistration({
+            userId: "",
+            eventId: "",
+            paymentStatus: "",
+            registrationDate: "",
+            ticketType: "",
         });
-      } else {
-        await axios.post(apiUrl, updatedRegistration, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-      }
-      fetchRegistrations();
-      setRegistration({
-        userId: "",
-        eventId: "",
-        paymentStatus: "",
-        registrationDate: "",
-        ticketType: "",
-      });
-      setEditMode(false);
+        setEditMode(false);
     } catch (error) {
-      console.error("Error saving registration:", error);
+        console.error("Error saving registration:", error);
     }
-  };
+};
 
-  const handleEdit = (reg) => {
-    setRegistration({
-      userId: reg.user.userID,
-      eventId: reg.event.event_id,
-      paymentStatus: reg.paymentStatus,
-      registrationDate: reg.registrationDate,
-      ticketType: reg.ticketType,
-    });
-    setEditMode(true);
-    setCurrentId(reg.registrationID);
-  };
 
-  const confirmDelete = (id) => {
-    setDeleteId(id);
-    setOpenDialog(true);
-  };
 
-  const handleDelete = async () => {
-    const token = localStorage.getItem("token");
-    try {
+const handleEdit = (reg) => {
+  setRegistration({
+      userId: reg.userId || "",
+      eventId: reg.eventId || "",
+      emailAddress: reg.emailAddress || "", 
+      paymentStatus: reg.paymentStatus || "",
+      registrationDate: reg.registrationDate || "",
+      ticketType: reg.ticketType || "",
+  });
+  setEditMode(true);
+  setCurrentId(reg.registrationID); // Use registrationID for updates
+};
+
+
+
+
+const confirmDelete = (id) => {
+  console.log("Confirm delete for registration ID:", id);
+  setDeleteId(id);
+  setOpenDialog(true);
+};
+
+
+const handleDelete = async () => {
+  const token = localStorage.getItem("token");
+  console.log("Deleting registration with ID:", deleteId);
+  try {
       await axios.delete(`${apiUrl}/${deleteId}`, {
-        headers: { Authorization: `Bearer ${token}` },
+          headers: { Authorization: `Bearer ${token}` },
       });
-      fetchRegistrations();
+      fetchRegistrations(); // Refresh the table
       setOpenDialog(false);
-    } catch (error) {
+  } catch (error) {
       console.error("Error deleting registration:", error);
       setOpenDialog(false);
-    }
-  };
+  }
+};
+
 
   return (
     <div className="admin-registrations-container">
@@ -217,31 +221,29 @@ const AdminRegistrations = () => {
       </TableRow>
     </TableHead>
     <TableBody>
-      {registrations.map((reg) => (
-        <StyledTableRow key={reg.registrationID}>
-          <StyledTableCell>{reg.user.firstName}</StyledTableCell>
-          <StyledTableCell>{reg.user.lastName}</StyledTableCell>
-          <StyledTableCell>{reg.user.emailAddress}</StyledTableCell>
-          <StyledTableCell>{reg.event.event_name}</StyledTableCell>
-          <StyledTableCell>{reg.registrationDate}</StyledTableCell>
-          <StyledTableCell>{reg.ticketType}</StyledTableCell>
-          <StyledTableCell>{reg.paymentStatus}</StyledTableCell>
-          <StyledTableCell>
-            <button
-              onClick={() => handleEdit(reg)}
-              className="edit-button"
-            >
-              Edit
+    {registrations.map((reg, index) => (
+    <StyledTableRow key={index}>
+        <StyledTableCell>{reg.firstName}</StyledTableCell>
+        <StyledTableCell>{reg.lastName}</StyledTableCell>
+        <StyledTableCell>{reg.emailAddress}</StyledTableCell>
+        <StyledTableCell>{reg.eventName}</StyledTableCell>
+        <StyledTableCell>{reg.registrationDate}</StyledTableCell>
+        <StyledTableCell>{reg.ticketType}</StyledTableCell>
+        <StyledTableCell>{reg.paymentStatus}</StyledTableCell>
+        <StyledTableCell>
+            <button onClick={() => handleEdit(reg)} className="edit-button">
+                Edit
             </button>
             <button
-              onClick={() => confirmDelete(reg.registrationID)}
-              className="delete-button"
+                onClick={() => confirmDelete(reg.registrationID)}
+                className="delete-button"
             >
-              Delete
+                Delete
             </button>
-          </StyledTableCell>
-        </StyledTableRow>
-      ))}
+        </StyledTableCell>
+    </StyledTableRow>
+))}
+
     </TableBody>
   </Table>
 </TableContainer>

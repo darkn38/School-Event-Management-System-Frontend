@@ -99,7 +99,7 @@ const UserRegistrations = () => {
           <TableBody>
             {registrations.map((reg) => (
               <StyledTableRow key={reg.registrationID}>
-                <StyledTableCell>{reg.event.event_name}</StyledTableCell>
+                <StyledTableCell>{reg.event.eventName}</StyledTableCell>
                 <StyledTableCell>{reg.registrationDate}</StyledTableCell>
                 <StyledTableCell>{reg.ticketType}</StyledTableCell>
                 <StyledTableCell>{reg.paymentStatus}</StyledTableCell>

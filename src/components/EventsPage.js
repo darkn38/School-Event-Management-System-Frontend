@@ -64,32 +64,34 @@ const EventsPage = () => {
                     console.error('No token found');
                     return;
                 }
-
+    
                 const response = await axios.get('http://localhost:8080/events', {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
                 });
-
+    
                 const currentDate = new Date();
                 const filteredEvents = response.data.filter((event) => {
                     const eventDate = new Date(event.date);
-                    return eventDate >= currentDate; // Include only current and upcoming events
+                    // Filter for APPROVED events only
+                    return eventDate >= currentDate && event.approvalStatus === 'APPROVED';
                 });
-
+    
                 const eventsWithImages = filteredEvents.map((event) => ({
                     ...event,
-                    imageUrl: eventTypeImages[event.event_type] || defaultImage,
+                    imageUrl: eventTypeImages[event.eventType] || defaultImage,
                 }));
-
+    
                 setEvents(eventsWithImages);
             } catch (error) {
                 console.error('Error fetching events:', error);
             }
         };
-
+    
         fetchEvents();
     }, []);
+    
 
     // Handles opening the details dialog
     const handleDetailsClick = (event) => {
@@ -97,24 +99,22 @@ const EventsPage = () => {
         setDetailsDialogOpen(true);
     };
     const handlePaymentSubmission = () => {
+        const baseAmount = 250; // Base payment for Standard tickets
+        const vipSurcharge = 200; // Additional charge for VIP tickets
+        const requiredAmount = ticketType === 'VIP' ? baseAmount + vipSurcharge : baseAmount;
+    
         // Validate payment amount
-        if (parseInt(paymentAmount) < 250) {
-            setErrorMessage('Amount must be at least PHP 250.');
+        if (parseInt(paymentAmount) < requiredAmount) {
+            setErrorMessage(`Amount must be at least PHP ${requiredAmount}.`);
             return;
-        } else if (parseInt(paymentAmount) > 250) {
-            setErrorMessage('Amount exceeds the required PHP 250. Please enter the exact amount.');
-            return;
-        }
-    
-        // Ensure payment details are provided
-        if (!paymentDetails) {
-            setErrorMessage(`Please enter your ${paymentMethod} details.`);
+        } else if (parseInt(paymentAmount) > requiredAmount) {
+            setErrorMessage(`Amount exceeds the required PHP ${requiredAmount}. Please enter the exact amount.`);
             return;
         }
     
-        // Clear errors and proceed with payment registration
+        // Clear errors and proceed with registration
         setErrorMessage('');
-        handleMockPaymentRegistration(); // Existing function to handle payment API
+        handleMockPaymentRegistration(); // Continue to the mock registration function
     };
     
 
@@ -131,12 +131,12 @@ const EventsPage = () => {
             return;
         }
         // Check if the event is free or paid first
-        if (freeEventTypes.includes(event.event_type)) {
+        if (freeEventTypes.includes(event.eventType)) {
             try {
                 // Register directly for free events
                 const registerResponse = await axios.post(
                     'http://localhost:8080/api/eventregistrations/register',
-                    { userID, eventID: event.event_id }, // Use JSON body
+                    { userID, eventID: event.eventID }, // Use JSON body
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -146,7 +146,7 @@ const EventsPage = () => {
                 );
     
                 if (registerResponse.status === 200) {
-                    setSuccessMessage(`Successfully registered for ${event.event_name}!`);
+                    setSuccessMessage(`Successfully registered for ${event.eventName}!`);
                     setSuccessDialogOpen(true); // Open success dialog
                 }
             } catch (error) {
@@ -162,7 +162,7 @@ const EventsPage = () => {
         const checkResponse = await axios.post(
             `http://localhost:8080/api/eventregistrations/check`,
             {
-                params: { userID, eventID: event.event_id },
+                params: { userID, eventID: event.eventID },
                 headers: {
                     Authorization: `Bearer ${token}`,
                     'Content-Type': 'application/json',
@@ -197,12 +197,12 @@ const EventsPage = () => {
             setSnackbarOpen(true);
             return;
         }
-
+    
         try {
             const response = await axios.post(
                 'http://localhost:8080/api/eventregistrations',
                 {
-                    eventId: selectedEvent.event_id,
+                    eventId: selectedEvent.eventID,
                     ticketType,
                     paymentStatus,
                     emailAddress: userEmail,
@@ -214,9 +214,9 @@ const EventsPage = () => {
                     },
                 }
             );
-
+    
             if (response.status === 200) {
-                setSnackbarMessage(`Successfully registered for ${selectedEvent.event_name}!`);
+                setSnackbarMessage(`Successfully registered for ${selectedEvent.eventName} with ${ticketType} ticket!`);
                 setSnackbarSeverity('success');
                 setSnackbarOpen(true);
             }
@@ -228,6 +228,7 @@ const EventsPage = () => {
         }
         setOpenDialog(false);
     };
+    
 
     const handleSnackbarClose = () => {
         setSnackbarOpen(false);
@@ -241,7 +242,7 @@ const EventsPage = () => {
 
             <Grid container spacing={4}>
                 {events.map((event) => (
-                    <Grid item xs={12} sm={6} md={4} key={event.event_id}>
+                    <Grid item xs={12} sm={6} md={4} key={event.eventID}>
                         <Card
                             sx={{
                                 transition: 'transform 0.3s, box-shadow 0.3s',
@@ -257,11 +258,11 @@ const EventsPage = () => {
                                 component="img"
                                 height="180"
                                 image={event.imageUrl || defaultImage}
-                                alt={event.event_name}
+                                alt={event.eventName}
                             />
                             <CardContent>
                                 <Typography variant="h5" component="div">
-                                    {event.event_name}
+                                    {event.eventName}
                                 </Typography>
                                 <Typography color="textSecondary" gutterBottom>
                                     {event.date}
@@ -271,10 +272,10 @@ const EventsPage = () => {
                                 </Typography>
                                 <Typography 
                                     variant="subtitle1" 
-                                    color={freeEventTypes.includes(event.event_type) ? "green" : "red"}
+                                    color={freeEventTypes.includes(event.eventType) ? "green" : "red"}
                                     sx={{ marginTop: '8px' }}
                                     >
-                                    {freeEventTypes.includes(event.event_type) ? "Free" : "Paid"}
+                                    {freeEventTypes.includes(event.eventType) ? "Free" : "Paid"}
                                 </Typography>
                                 <Box mt={2}>
                                     <Button
@@ -316,7 +317,7 @@ const EventsPage = () => {
                 <DialogTitle>Event Details</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        <strong>Name:</strong> {selectedEvent?.event_name}
+                        <strong>Name:</strong> {selectedEvent?.eventName}
                         <br />
                         <strong>Date:</strong> {selectedEvent?.date}
                         <br />
@@ -333,7 +334,7 @@ const EventsPage = () => {
             </Dialog>
 
             <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
-    <DialogTitle>Payment for {selectedEvent?.event_name}</DialogTitle>
+    <DialogTitle>Payment for {selectedEvent?.eventName}</DialogTitle>
     <DialogContent>
         {/* Ticket Type Selection */}
         <DialogContentText>Choose your ticket type:</DialogContentText>
@@ -381,8 +382,9 @@ const EventsPage = () => {
 
         {/* Fixed Payment Amount and Input for Validation */}
         <DialogContentText sx={{ marginTop: '16px' }}>
-            <strong>PHP 250</strong>
+            <strong>{ticketType === 'VIP' ? 'VIP = 450' : 'Standard = 250'}</strong>
         </DialogContentText>
+
         <TextField
             fullWidth
             type="number"

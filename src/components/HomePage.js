@@ -46,12 +46,20 @@ const HomePage = () => {
     }, []);
 
     const handleSearch = () => {
-        if (eventType && location) {
-            navigate('/search-results', { state: { eventType, location } });
-        } else {
-            alert('Please select both an event type and a location.');
+        if (!eventType && !location) {
+            alert('Please select an event type or a location.');
+            return;
         }
+    
+        const searchCriteria = {
+            eventType: eventType || null,
+            location: location || null,
+        };
+    
+        // Navigate to the search results page with the selected criteria
+        navigate('/search-results', { state: { ...searchCriteria } });
     };
+    
 
     return (
         <div className="homepage-container">
@@ -102,11 +110,11 @@ const HomePage = () => {
                     {upcomingEvents.map((event, index) => (
                         <div className="event-card" key={index}>
                             <img
-                                src={eventTypeImages[event.event_type] || defaultImage}
-                                alt={event.event_name}
+                                src={eventTypeImages[event.eventType] || defaultImage}
+                                alt={event.eventName}
                                 className="event-image"
                             />
-                            <h3>{event.event_name}</h3>
+                            <h3>{event.eventName}</h3>
                             <p>Date: {new Date(event.date).toLocaleDateString()}</p>
                             <p>Time: {event.time}</p>
                             <p>Location: {event.location}</p>

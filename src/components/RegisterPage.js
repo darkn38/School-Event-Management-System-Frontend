@@ -2,7 +2,20 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ErrorIcon from '@mui/icons-material/Error';
-import { Button, TextField, Typography, Box, Dialog, DialogTitle, DialogContent, DialogActions, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import {
+  Button,
+  TextField,
+  Typography,
+  Box,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem
+} from '@mui/material';
 import './RegisterPage.css';
 
 function RegisterPage() {
@@ -55,7 +68,10 @@ function RegisterPage() {
     <div className="register-page">
       <Box className="register-container">
         <Typography variant="h4" component="h1" align="center" className="register-title">
-          Register
+          Create Your Account
+        </Typography>
+        <Typography variant="body1" align="center" className="register-subtitle">
+          Join us and start managing or requesting events easily
         </Typography>
         <form onSubmit={handleSubmit} className="register-form">
           <TextField

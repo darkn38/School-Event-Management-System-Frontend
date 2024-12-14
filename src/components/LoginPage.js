@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { jwtDecode } from 'jwt-decode'; // Corrected the import
+import { jwtDecode } from 'jwt-decode';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ErrorIcon from '@mui/icons-material/Error';
@@ -17,52 +17,27 @@ const LoginPage = ({ setLoggedIn }) => {
 
     const handleLogin = async (e) => {
         e.preventDefault();
-
         const user = { emailAddress: email, password: password };
 
         try {
             const response = await axios.post('http://localhost:8080/api/auth/login', user);
-
             if (response.status === 200) {
                 const { token, role, isAdmin } = response.data;
-
-                // Decode the token to get user information
                 const decodedToken = jwtDecode(token);
-                console.log("Decoded Token:", decodedToken);
+                const userEmail = decodedToken.sub; 
+                const userID = decodedToken.userID; 
 
-                // Extract user information from the token
-                const userEmail = decodedToken.sub; // Email
-                const userID = decodedToken.userID; // Assuming 'userID' is a claim in the token
-
-                // Store the token and extracted information in localStorage
                 localStorage.setItem('token', token);
-                if (userEmail) {
-                    localStorage.setItem('userEmail', userEmail);
-                } else {
-                    console.error("Email not found in the decoded token.");
-                }
-                if (userID) {
-                    localStorage.setItem('userID', userID);
-                } else {
-                    console.error("User ID not found in the decoded token.");
-                }
+                if (userEmail) localStorage.setItem('userEmail', userEmail);
+                if (userID) localStorage.setItem('userID', userID);
 
-                // Store the role and isAdmin in localStorage
                 localStorage.setItem('loggedIn', 'true');
                 localStorage.setItem('userRole', role);
                 localStorage.setItem('isAdmin', isAdmin);
 
-                // Update the application state with the role
                 setLoggedIn(role);
+                navigate(role === 'Admin' ? '/admin' : '/home');
 
-                // Redirect based on the user role
-                if (role === 'Admin') {
-                    navigate('/admin');
-                } else {
-                    navigate('/home');
-                }
-
-                // Show success dialog
                 setMessage('Login successful!');
                 setDialogType('success');
                 setOpenDialog(true);
@@ -82,14 +57,19 @@ const LoginPage = ({ setLoggedIn }) => {
         <div className="login-page">
             <div className="login-container">
                 <div className="login-left">
-                    <h2>Login</h2>
-                    {message && dialogType === 'error' && <p style={{ color: 'red' }}>{message}</p>}
+                    <h2 className="login-title">Welcome Back</h2>
+                    <p className="login-subtitle">Sign in to manage or request events</p>
+                    
+                    {message && dialogType === 'error' && (
+                        <p className="error-message">{message}</p>
+                    )}
+
                     <form onSubmit={handleLogin} className="login-form">
                         <div className="form-group">
                             <label>Email</label>
                             <input
                                 type="email"
-                                placeholder="Email"
+                                placeholder="Enter your email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 required
@@ -99,7 +79,7 @@ const LoginPage = ({ setLoggedIn }) => {
                             <label>Password</label>
                             <input
                                 type="password"
-                                placeholder="Password"
+                                placeholder="Enter your password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
@@ -107,7 +87,9 @@ const LoginPage = ({ setLoggedIn }) => {
                         </div>
                         <button type="submit" className="login-button">Login</button>
                     </form>
+                    
                     <div className="register-link">
+                        <p>Don't have an account?</p>
                         <button onClick={() => navigate('/register')} className="register-button">
                             Register
                         </button>
@@ -115,7 +97,11 @@ const LoginPage = ({ setLoggedIn }) => {
                 </div>
 
                 <div className="login-right">
-                    {/* You can add any extra content here, like a logo or a background */}
+                    <div className="login-right-overlay">
+                        <h3 className="right-overlay-text">
+                            "Empowering Students &amp; Faculty to Curate Memorable Events"
+                        </h3>
+                    </div>
                 </div>
             </div>
 

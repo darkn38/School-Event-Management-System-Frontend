@@ -406,7 +406,7 @@ const EventsPage = () => {
             color="primary"
             onClick={handlePaymentSubmission}
         >
-            PAY 250
+            PAY
         </Button>
     </DialogActions>
 </Dialog>

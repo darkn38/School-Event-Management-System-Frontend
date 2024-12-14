@@ -1,83 +1,128 @@
-/* Admin Dashboard Content Area */
 .admin-dashboard-content {
-    margin-left: 250px; /* Adjust the margin to the width of your sidebar */
+    margin-left: 250px; /* Adjust if you have a sidebar */
     padding: 20px;
     box-sizing: border-box;
     background-image: url('../../images/temp111.jpg');
-    background-size: cover; /* Make the background cover the entire content area */
-    background-position: center center; /* Center the image */
-    background-repeat: no-repeat; /* Prevent background image from repeating */
-    min-height: 100vh; /* Ensure the content area takes up at least the full viewport height */
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+    color: #333;
+    font-family: 'Arial', sans-serif;
+}
+
+/* Loading State */
+.loading-state {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 /* Dashboard Title */
 .dashboard-title {
-    font-size: 24px;
-    margin-bottom: 20px;
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 30px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    color: #fff; /* White text to stand out against background */
 }
 
 /* Analytics Container */
 .analytics-container {
     display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+/* Summary Cards Row */
+.summary-cards {
+    display: flex;
     flex-wrap: wrap;
     gap: 20px;
-    justify-content: space-between;
+    justify-content: flex-start;
 }
 
 /* Analytics Cards */
 .analytics-card {
-    width: 30%;
-    padding: 15px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    background-color: #fff;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    box-sizing: border-box;
+    flex: 1;
+    min-width: 200px;
+    background-color: rgba(255,255,255,0.9);
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.analytics-card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 6px 24px rgba(0,0,0,0.3);
 }
 
 .card-title {
     font-size: 18px;
     font-weight: bold;
     margin-bottom: 10px;
+    color: #333;
 }
 
 .card-value {
-    font-size: 22px;
-    font-weight: bold;
-}
-
-/* Gauge Section */
-.gauge {
-    width: 100%;
-    height: 80px;
-    background-color: #f2f2f2;
-    border-radius: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.gauge-value {
     font-size: 24px;
+    font-weight: 700;
+    color: #4CAF50; /* A green hue to represent growth/success */
+}
+
+/* Charts Section */
+.charts-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: flex-start;
+}
+
+.chart-card {
+    background-color: rgba(255,255,255,0.9);
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    flex: 1;
+    min-width: 450px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.chart-card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 6px 24px rgba(0,0,0,0.3);
+}
+
+.chart-title {
+    font-size: 20px;
     font-weight: bold;
+    margin-bottom: 15px;
+    color: #333;
 }
 
-/* Pie Chart Section */
-.pie-chart {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
+/* Responsive Design */
+@media (max-width: 768px) {
+    .dashboard-title {
+        font-size: 24px;
+        text-align: center;
+    }
 
-.pie-legend {
-    list-style-type: none;
-    padding-left: 0;
-    font-size: 14px;
-}
+    .analytics-container {
+        gap: 20px;
+    }
 
-/* Pie Chart Legend Items */
-.pie-legend li {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+    .summary-cards {
+        flex-direction: column;
+    }
+
+    .charts-row {
+        flex-direction: column;
+    }
+
+    .chart-card {
+        min-width: 100%;
+    }
 }

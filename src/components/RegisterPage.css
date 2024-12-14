@@ -1,89 +1,93 @@
-/* Register page background and centering */
+/* Overall page with the original background image */
 .register-page {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  min-height: 100vh;
   width: 100%;
   position: relative;
+  padding: 20px;
   background: url('../images/temp111.jpg') center/cover no-repeat;
 }
 
-/* Register form container */
 .register-container {
   width: 100%;
   max-width: 500px;
   padding: 40px;
-  background-color: rgba(255, 255, 255, 0.8);
-  border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  background-color: rgba(255, 250, 240, 0.95); /* warm creamy background */
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
   box-sizing: border-box;
 }
 
-/* Title styling */
 .register-title {
-  font-size: 28px;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 20px;
-  text-align: center;
+  font-size: 28px !important;
+  font-weight: 600 !important;
+  color: #333 !important;
+  margin-bottom: 10px !important;
+  text-align: center !important;
 }
 
-/* Register form styling */
+.register-subtitle {
+  font-size: 16px !important;
+  color: #555 !important;
+  margin-bottom: 30px !important;
+  text-align: center !important;
+}
+
 .register-form {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
-/* Ensuring consistent input box styling */
 .MuiOutlinedInput-root {
-  border-radius: 6px; /* Consistent border-radius */
-  box-shadow: none; /* Remove any inner shadows */
+  border-radius: 6px;
 }
 
-/* Hover and focus styles for all input fields */
 .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
-  border-color: #4CAF50; /* Green border on hover */
+  border-color: #6f9e58; /* Muted green on hover */
 }
 
 .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
-  border-color: #4CAF50; /* Green border on focus */
+  border-color: #6f9e58; /* Muted green on focus */
 }
 
-/* Button styling */
-.register-submit-button,
-.back-button {
-  padding: 12px;
-  font-size: 16px;
-  font-weight: bold;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
+/* Register submit button */
 .register-submit-button {
-  background-color: #4CAF50;
-  color: white;
+  background-color: #6f9e58 !important; 
+  color: #fff !important;
+  font-weight: bold !important;
+  font-size: 16px !important;
+  border-radius: 6px !important;
+  padding: 12px !important;
+  transition: background-color 0.3s !important;
 }
 
 .register-submit-button:hover {
-  background-color: #45a049;
+  background-color: #5a8344 !important;
 }
 
+/* Back button with a complementary muted teal */
 .back-button {
-  background-color: #0066cc;
-  color: white;
+  background-color: #3c6e71 !important; 
+  color: #fff !important;
+  font-weight: bold !important;
+  font-size: 16px !important;
+  border-radius: 6px !important;
+  padding: 12px !important;
+  transition: background-color 0.3s !important;
 }
 
 .back-button:hover {
-  background-color: #005bb5;
+  background-color: #33585a !important;
 }
 
 /* Dialog Styles */
 .MuiDialog-paper {
   width: 400px;
   padding: 20px;
-  border-radius: 8px;
+  border-radius: 10px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
@@ -96,9 +100,22 @@
 }
 
 .dialog-icon.success {
-  color: #4CAF50;
+  color: #6f9e58;
 }
 
 .dialog-icon.error {
   color: #f44336;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 600px) {
+  .register-container {
+    padding: 30px;
+  }
+  .register-title {
+    font-size: 24px !important;
+  }
+  .register-subtitle {
+    font-size: 14px !important;
+  }
 }

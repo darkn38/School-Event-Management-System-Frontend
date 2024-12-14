@@ -1,126 +1,166 @@
-/* Full-page background image */
+/* Overall page container with the school background */
 .login-page {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
     width: 100%;
     position: relative;
     background: url('../images/temp111.jpg') center/cover no-repeat;
+    padding: 20px;
 }
 
-/* Login container */
+/* The main container holding the left and right sections */
 .login-container {
     display: flex;
     width: 80%;
-    height: 80%;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-    background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent background */
+    max-width: 1000px;
+    min-height: 500px;
+    border-radius: 16px;
+    background-color: rgba(255, 250, 240, 0.9); /* Warm, creamy background with a bit of transparency */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
     overflow: hidden;
 }
 
-/* Left side: Login form */
+/* Left panel with form */
 .login-left {
     flex: 1;
     padding: 40px;
-    background-color: #ffffff;
     display: flex;
-    justify-content: center;
-    align-items: center;
     flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
 }
 
-/* Right side: Background image */
+.login-title {
+    font-size: 30px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.login-subtitle {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 30px;
+}
+
+/* Right panel with background image */
 .login-right {
     flex: 1;
     background: url('../images/hotel1.jpg') center center no-repeat;
-    background-size: cover; /* Ensure the image covers the container */
+    background-size: cover;
+    position: relative;
+}
+
+/* Overlay to unify the right-side image with the left panel styling */
+.login-right-overlay {
+    background: rgba(0, 0, 0, 0.4);
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 20px;
 }
 
-/* The login form */
+.right-overlay-text {
+    color: #fff;
+    font-size: 20px;
+    font-weight: 500;
+    text-align: center;
+    max-width: 80%;
+    line-height: 1.4;
+}
+
+/* The form */
 .login-form {
     width: 100%;
     max-width: 400px;
-    text-align: center;
 }
 
-.login-form h2 {
-    font-size: 24px;
-    margin-bottom: 30px;
-    color: #333;
-}
-
-/* Form groups */
 .form-group {
     margin-bottom: 20px;
-    text-align: left;
+    display: flex;
+    flex-direction: column;
 }
 
 .form-group label {
     font-size: 14px;
-    color: #555;
-    margin-bottom: 5px;
-    display: block;
+    color: #333;
+    margin-bottom: 6px;
+    font-weight: 500;
 }
 
 .form-group input {
     width: 100%;
-    padding: 10px;
+    padding: 12px;
     font-size: 14px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    transition: border-color 0.3s;
 }
 
 .form-group input:focus {
-    border-color: #4CAF50;
+    border-color: #6f9e58; /* A softer green on focus */
     outline: none;
 }
 
 /* Login button */
 .login-button {
     width: 100%;
-    padding: 12px;
-    background-color: #4CAF50;
+    padding: 14px;
+    background-color: #6f9e58; /* Softer green to match warmer tones */
     color: #fff;
     font-size: 16px;
+    font-weight: 600;
     border: none;
-    border-radius: 5px;
+    border-radius: 6px;
     cursor: pointer;
     transition: background-color 0.3s;
+    margin-top: 10px;
 }
 
 .login-button:hover {
-    background-color: #45a049;
+    background-color: #5a8344;
 }
 
-/* Register button */
+/* Register section */
+.register-link {
+    margin-top: 20px;
+    text-align: left;
+}
+
+.register-link p {
+    color: #333;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
 .register-button {
     width: 100%;
     padding: 12px;
-    background-color: #4CAF50;
+    background-color: #3c6e71; /* A complementary muted teal */
     color: #fff;
     font-size: 16px;
+    font-weight: 600;
     border: none;
-    border-radius: 5px;
+    border-radius: 6px;
     cursor: pointer;
     transition: background-color 0.3s;
-    margin-top: 10px; /* Add margin to space it out from the login button */
 }
 
 .register-button:hover {
-    background-color: #45a049;
+    background-color: #33585a;
 }
 
 /* Error message */
 .error-message {
-    color: red;
+    color: #D32F2F;
     font-size: 14px;
-    margin-top: 10px;
+    margin-bottom: 20px;
+    font-weight: 500;
 }
 
 /* Dialog styling */
@@ -131,9 +171,8 @@
     align-items: center;
 }
 
-/* Dialog content size (same as Register dialog box) */
 .MuiDialog-paper {
-    width: 400px; /* Set the width to match the Register dialog size */
+    width: 400px;
     padding: 20px;
     border-radius: 10px;
 }
@@ -152,7 +191,7 @@
 }
 
 .dialog-title.success {
-    color: #4CAF50;
+    color: #6f9e58;
 }
 
 .dialog-title.error {
@@ -167,30 +206,37 @@
 
 /* Dialog button */
 .MuiDialogActions-root button {
-    background-color: #4CAF50;
-    color: #fff;
-    font-weight: bold;
-    padding: 8px 20px;
-    border-radius: 5px;
-    margin-top: 20px;
-    transition: background-color 0.3s;
+    background-color: #6f9e58 !important;
+    color: #fff !important;
+    font-weight: bold !important;
+    padding: 8px 20px !important;
+    border-radius: 5px !important;
+    margin-top: 20px !important;
+    transition: background-color 0.3s !important;
 }
 
 .MuiDialogActions-root button:hover {
-    background-color: #45a049;
+    background-color: #5a8344 !important;
 }
 
 /* Responsive design */
 @media screen and (max-width: 768px) {
     .login-container {
         flex-direction: column;
+        width: 90%;
+        min-height: auto;
     }
     .login-left, .login-right {
-        flex: none;
         width: 100%;
-        height: 50vh;
+        min-height: 50vh;
     }
     .login-form {
-        width: 90%;
+        width: 100%;
+    }
+    .login-subtitle {
+        margin-bottom: 20px;
+    }
+    .right-overlay-text {
+        font-size: 18px;
     }
 }

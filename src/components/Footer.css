@@ -1,0 +1,57 @@
+.footer-container {
+    background-color: #f8f8f8;
+    border-top: 1px solid #ddd;
+    color: #333;
+    padding: 10px 20px; /* Reduced padding */
+    font-size: 14px;
+    margin-top: 20px; /* You can adjust this if needed */
+}
+
+.footer-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 10px; /* Reduced bottom margin */
+}
+
+.footer-column {
+    flex: 1;
+    min-width: 150px; /* Smaller min-width for a more compact layout */
+}
+
+.footer-column h4 {
+    font-size: 14px; /* Smaller heading font */
+    margin-bottom: 8px; /* Less spacing */
+    font-weight: bold;
+}
+
+.footer-column ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-column ul li {
+    margin-bottom: 5px; /* Reduced spacing between items */
+    font-size: 13px; /* Slightly smaller text */
+}
+
+.footer-column ul li a {
+    text-decoration: none;
+    color: #333;
+    transition: color 0.2s ease-in-out;
+}
+
+.footer-column ul li a:hover {
+    color: #000;
+    text-decoration: underline;
+}
+
+.footer-bottom {
+    text-align: center;
+    border-top: 1px solid #ddd;
+    padding-top: 8px; /* Reduced top padding */
+    font-size: 12px; /* Smaller font */
+    color: #555;
+}

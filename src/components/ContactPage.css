@@ -102,6 +102,18 @@
     margin-bottom: 20px;
 }
 
+.status-message {
+    background-color: #d4edda;
+    color: #155724;
+    padding: 10px 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    width: 100%;
+    text-align: center;
+    font-weight: 500;
+}
+
 .contact-form form {
     width: 100%;
     display: flex;
